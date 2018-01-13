@@ -21,12 +21,15 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		02039FE42008C9D60043E564 /* TurnScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02039FE22008C9D60043E564 /* TurnScheduler.swift */; };
+		02039FE52008C9DA0043E564 /* LogMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02039FE02008C6320043E564 /* LogMessage.swift */; };
+		02039FE8200921DE0043E564 /* TurnSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02039FE6200921DE0043E564 /* TurnSource.swift */; };
+		02039FEA200A289C0043E564 /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02039FE9200A289C0043E564 /* Services.swift */; };
 		OBJ_24 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_6 /* Package.swift */; };
 		OBJ_30 /* TopazTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_14 /* TopazTests.swift */; };
 		OBJ_32 /* TopazBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "Topaz::TopazBase::Product" /* TopazBase.framework */; };
 		OBJ_40 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_11 /* main.swift */; };
 		OBJ_42 /* TopazBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "Topaz::TopazBase::Product" /* TopazBase.framework */; };
-		OBJ_48 /* TopazBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_9 /* TopazBase.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,10 +57,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		02039FE02008C6320043E564 /* LogMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogMessage.swift; sourceTree = "<group>"; };
+		02039FE22008C9D60043E564 /* TurnScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnScheduler.swift; sourceTree = "<group>"; };
+		02039FE6200921DE0043E564 /* TurnSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnSource.swift; sourceTree = "<group>"; };
+		02039FE9200A289C0043E564 /* Services.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services.swift; sourceTree = "<group>"; };
 		OBJ_11 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		OBJ_14 /* TopazTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopazTests.swift; sourceTree = "<group>"; };
 		OBJ_6 /* Package.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
-		OBJ_9 /* TopazBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopazBase.swift; sourceTree = "<group>"; };
 		"Topaz::Topaz::Product" /* Topaz */ = {isa = PBXFileReference; lastKnownFileType = text; path = Topaz; sourceTree = BUILT_PRODUCTS_DIR; };
 		"Topaz::TopazBase::Product" /* TopazBase.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = TopazBase.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"Topaz::TopazTests::Product" /* TopazTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = TopazTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -126,7 +132,7 @@
 			name = Products;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		OBJ_5 /*  */ = {
+		OBJ_5 = {
 			isa = PBXGroup;
 			children = (
 				OBJ_6 /* Package.swift */,
@@ -134,7 +140,6 @@
 				OBJ_12 /* Tests */,
 				OBJ_15 /* Products */,
 			);
-			name = "";
 			sourceTree = "<group>";
 		};
 		OBJ_7 /* Sources */ = {
@@ -149,7 +154,10 @@
 		OBJ_8 /* TopazBase */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_9 /* TopazBase.swift */,
+				02039FE22008C9D60043E564 /* TurnScheduler.swift */,
+				02039FE9200A289C0043E564 /* Services.swift */,
+				02039FE6200921DE0043E564 /* TurnSource.swift */,
+				02039FE02008C6320043E564 /* LogMessage.swift */,
 			);
 			name = TopazBase;
 			path = Sources/TopazBase;
@@ -237,7 +245,7 @@
 			knownRegions = (
 				en,
 			);
-			mainGroup = OBJ_5 /*  */;
+			mainGroup = OBJ_5;
 			productRefGroup = OBJ_15 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -280,7 +288,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
-				OBJ_48 /* TopazBase.swift in Sources */,
+				02039FEA200A289C0043E564 /* Services.swift in Sources */,
+				02039FE52008C9DA0043E564 /* LogMessage.swift in Sources */,
+				02039FE8200921DE0043E564 /* TurnSource.swift in Sources */,
+				02039FE42008C9D60043E564 /* TurnScheduler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
