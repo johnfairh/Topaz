@@ -17,7 +17,7 @@ extension Turn {
     static var INITIAL_TURN: Turn { return 0 }
 }
 
-public final class TurnSource: LogMessageEmitter {
+public final class TurnSource: LogMessageEmitter, Encodable {
     /// Queue that everything runs on
     private var queue: DispatchQueue
 
@@ -131,7 +131,7 @@ public final class TurnSource: LogMessageEmitter {
     public init(queue: DispatchQueue, logMessageHandler: @escaping LogMessage.Handler) {
         self.queue = queue
         self.logMessageHandler = logMessageHandler
-        self.thisTurn = Turn.INITIAL_TURN
+        self.thisTurn = .INITIAL_TURN
         self.clients = []
         self.progress = .manual
     }
@@ -140,5 +140,41 @@ public final class TurnSource: LogMessageEmitter {
 extension TurnSource: CustomStringConvertible {
     public var description: String {
         return "\(logMessagePrefix) thisTurn=\(thisTurn) progress=\(progress)"
+    }
+}
+
+// MARK: - History
+
+extension TurnSource: Historical {
+    enum CodingKeys: CodingKey {
+        case thisTurn
+        case progressIsManual
+        case progressAutoMilliseconds
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(thisTurn, forKey: .thisTurn)
+        switch progress {
+        case .manual:
+            try container.encode(true, forKey: .progressIsManual)
+        case .automatic(let milliseconds):
+            try container.encode(milliseconds, forKey: .progressAutoMilliseconds)
+        }
+    }
+
+    public func restore(from decoder: Decoder) throws {
+        do {
+            let values = try decoder.container(keyedBy: CodingKeys.self)
+            thisTurn = try values.decode(UInt64.self, forKey: .thisTurn)
+            if values.contains(.progressIsManual) {
+                progress = .manual
+            } else {
+                let period = try values.decode(UInt32.self, forKey: .progressAutoMilliseconds)
+                progress = .automatic(milliseconds: period)
+            }
+        } catch {
+            throw RestoreError(underlyingError: error)
+        }
     }
 }

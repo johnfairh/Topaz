@@ -12,12 +12,16 @@ public struct Services {
     /// The queue on which turns execute.  Must use this queue to talk to `TurnSource` for example.
     public let turnQueue: DispatchQueue
 
+    /// Create and modify history
+    public let historian: Historian
+
     /// Generate turns
     public let turnSource: TurnSource
 
     /// Create a new set of Topaz services
     public init(logMessageHandler: @escaping LogMessage.Handler) {
         turnQueue = DispatchQueue(label: DispatchQueue.TOPAZ_LABEL)
+        historian = Historian(logMessageHandler: logMessageHandler)
         turnSource = TurnSource(queue: turnQueue, logMessageHandler: logMessageHandler)
     }
 }
