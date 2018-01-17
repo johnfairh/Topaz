@@ -17,21 +17,16 @@ extension Turn {
     static var INITIAL_TURN: Turn { return 0 }
 }
 
-public final class TurnSource: LogMessageEmitter, Encodable {
+public final class TurnSource: LogMessageEmitter {
     /// Queue that everything runs on
     private var queue: DispatchQueue
+
+    /// Need `Historian` to checkpoint turns
+    private var historian: Historian
 
     /// Logger
     public var logMessageHandler: LogMessage.Handler
     public let logMessagePrefix = "TurnSource"
-
-    /// The turn that is happing right now
-    public private(set) var thisTurn: Turn
-
-    /// The next turn
-    public var nextTurn: Turn {
-        return thisTurn + 1
-    }
 
     /// Clients registered for new turns
     public typealias Client = (Turn, TurnSource) -> Void
@@ -44,17 +39,6 @@ public final class TurnSource: LogMessageEmitter, Encodable {
             DispatchQueue.checkTurnQueue(self)
         }
         clients.append(client)
-    }
-
-    /// Start the next turn
-    private func newTurn() {
-        guard nextTurn != 0 else {
-            log(.error, "Turn limit reached, the end.")
-            fatalError()
-        }
-        thisTurn = nextTurn
-        log(.info, "Starting turn \(self.thisTurn)")
-        clients.forEach { $0(thisTurn, self) }
     }
 
     /// Rules for turn progression
@@ -73,6 +57,36 @@ public final class TurnSource: LogMessageEmitter, Encodable {
             case .automatic(let ms): return "auto(\(ms)ms)"
             }
         }
+    }
+
+    /// State to be serialized
+    fileprivate struct State: Codable {
+        var thisTurn: Turn
+        var progress: Progress
+    }
+    private var state: State
+
+    /// The turn that is happing right now
+    public private(set) var thisTurn: Turn {
+        get { return state.thisTurn }
+        set { state.thisTurn = newValue }
+    }
+
+    /// The next turn
+    public var nextTurn: Turn {
+        return thisTurn + 1
+    }
+
+    /// Start the next turn
+    private func newTurn() {
+        guard nextTurn != 0 else {
+            log(.error, "Turn limit reached, the end.")
+            fatalError()
+        }
+        thisTurn = nextTurn
+        log(.info, "Starting turn \(self.thisTurn)")
+        clients.forEach { $0(thisTurn, self) }
+        historian.save(turn: thisTurn)
     }
 
     /// Timer for automatic progress.  `nil` in manual mode.
@@ -103,17 +117,17 @@ public final class TurnSource: LogMessageEmitter, Encodable {
     /// If used to change the period of automatic progress then the current elapsed period is
     /// ignored -- an entire new period will elapse before the next turn.
     public var progress: Progress {
-        willSet {
+        set {
             DispatchQueue.checkTurnQueue(self)
             log(.info, "Changing progress from \(self.progress) to \(newValue)")
-            if case .automatic(_) = progress {
-                cancelTimer()
-            }
-        }
-        didSet {
+            state.progress = newValue
+            cancelTimer()
             if case .automatic(let milliseconds) = progress {
                 startTimer(milliseconds)
             }
+        }
+        get {
+            return state.progress
         }
     }
 
@@ -128,14 +142,42 @@ public final class TurnSource: LogMessageEmitter, Encodable {
     }
 
     /// Create a new `TurnSource` in `Progress.manual` mode
-    public init(queue: DispatchQueue, logMessageHandler: @escaping LogMessage.Handler) {
+    public init(queue: DispatchQueue, historian: Historian, logMessageHandler: @escaping LogMessage.Handler) {
         self.queue = queue
+        self.historian = historian
         self.logMessageHandler = logMessageHandler
-        self.thisTurn = .INITIAL_TURN
         self.clients = []
-        self.progress = .manual
+        self.state = State(thisTurn: .INITIAL_TURN, progress: .manual)
+        historian.register(client: self, withId: logMessagePrefix)
     }
 }
+
+// MARK: - Historical
+
+extension TurnSource: Historical {
+    /// Save internal `State` struct.
+    public func saveHistory(using encoder: JSONEncoder) -> Data {
+        return try! encoder.encode(state)
+    }
+
+    /// Restore directly to the internal struct.  This bypasses the property
+    /// setter for `progress` so the timer does not restart - wait until the
+    /// restore is completely done and `restartAfterRestore` is called
+    public func restoreHistory(from data: Data, using decoder: JSONDecoder) throws {
+        state = try decoder.decode(State.self, from: data)
+        log(.info, "Restored \(self)")
+    }
+
+    /// Restart the turnsource - called from the very outside at the end of a restore to get
+    /// things going again.
+    public func restartAfterRestore() {
+        log(.info, "Restarting after restore complete")
+        let progress = self.progress
+        self.progress = progress
+    }
+}
+
+// MARK: - CustomStringConvertible
 
 extension TurnSource: CustomStringConvertible {
     public var description: String {
@@ -145,7 +187,8 @@ extension TurnSource: CustomStringConvertible {
 
 // MARK: - History
 
-extension TurnSource: Historical {
+/// Bit of a mess to serialize this thing because of the associated-type enum
+extension TurnSource.State {
     enum CodingKeys: CodingKey {
         case thisTurn
         case progressIsManual
@@ -163,7 +206,7 @@ extension TurnSource: Historical {
         }
     }
 
-    public func restore(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         do {
             let values = try decoder.container(keyedBy: CodingKeys.self)
             thisTurn = try values.decode(UInt64.self, forKey: .thisTurn)

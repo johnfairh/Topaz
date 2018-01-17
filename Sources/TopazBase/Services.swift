@@ -22,7 +22,31 @@ public struct Services {
     public init(logMessageHandler: @escaping LogMessage.Handler) {
         turnQueue = DispatchQueue(label: DispatchQueue.TOPAZ_LABEL)
         historian = Historian(logMessageHandler: logMessageHandler)
-        turnSource = TurnSource(queue: turnQueue, logMessageHandler: logMessageHandler)
+        turnSource = TurnSource(queue: turnQueue, historian: historian, logMessageHandler: logMessageHandler)
+    }
+}
+
+extension Services {
+    public func setNewHistory(_ historyAccess: HistoryAccess) throws {
+        DispatchQueue.checkTurnQueue()
+        historian.historyAccess = historyAccess
+
+        if let latestTurn = historyAccess.mostRecentTurn {
+            try historian.restoreAtTurn(latestTurn)
+        } else {
+            guard turnSource.thisTurn == .INITIAL_TURN else {
+                // TODO: do better?
+                fatalError("Attempting to set a new history that is empty, so cannot be restored from, " +
+                           "onto a world that is not at INITIAL_TURN.")
+            }
+        }
+        turnSource.restartAfterRestore()
+    }
+
+    public func setCurrentHistoryTurn(_ turn: Turn) throws {
+        DispatchQueue.checkTurnQueue()
+        try historian.restoreAtTurn(turn)
+        turnSource.restartAfterRestore()
     }
 }
 
@@ -38,7 +62,7 @@ extension DispatchQueue {
     }
 
     /// Validate the current thread is executing on the turn queue.  Panics if not.
-    public static func checkTurnQueue(_ logger: LogMessageEmitter?) {
+    public static func checkTurnQueue(_ logger: LogMessageEmitter? = nil) {
         let currentLabel = currentQueueLabel
         if let label = currentLabel,
             label == TOPAZ_LABEL {
