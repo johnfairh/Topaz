@@ -74,19 +74,25 @@ public final class TurnSource: Logger {
 
     /// The next turn
     public var nextTurn: Turn {
+        guard thisTurn < Turn.max else {
+            log(.error, "Turn limit reached, the end.")
+            fatalError()
+        }
         return thisTurn + 1
     }
 
-    /// Start the next turn
+    /// Execute the next turn
     private func newTurn() {
-        guard nextTurn != 0 else {
-            log(.error, "Turn limit reached, the end.")
+        guard nextTurn != .INITIAL_TURN else {
+            log(.error, "Confused about turn ordering, current turn is \(self.thisTurn)")
             fatalError()
         }
         thisTurn = nextTurn
         log(.info, "Starting turn \(self.thisTurn)")
         clients.forEach { $0(thisTurn, self) }
+        log(.info, "Adding turn \(self.thisTurn) to history")
         historian.save(turn: thisTurn)
+        log(.debug, "Turn \(self.thisTurn) added to history")
     }
 
     /// Timer for automatic progress.  `nil` in manual mode.

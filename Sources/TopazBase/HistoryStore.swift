@@ -86,6 +86,10 @@ public final class InMemoryHistoryStore: HistoryStore {
         var mostRecentTurn: Turn? {
             return highestTurn == .INITIAL_TURN ? nil : highestTurn
         }
+
+        var description: String {
+            return "InMemoryHistory \(name) turns \(turns) last accessed \(accessTime)"
+        }
     }
 
     private var historyStore: [String : InMemoryHistory] = [:]
