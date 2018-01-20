@@ -62,7 +62,7 @@ extension DispatchQueue {
     }
 
     /// Validate the current thread is executing on the turn queue.  Panics if not.
-    public static func checkTurnQueue(_ logger: LogMessageEmitter? = nil) {
+    public static func checkTurnQueue(_ logger: Logger? = nil) {
         let currentLabel = currentQueueLabel
         if let label = currentLabel,
             label == TOPAZ_LABEL {

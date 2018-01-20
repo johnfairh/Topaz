@@ -94,10 +94,10 @@ public protocol HistoryAccess {
 ///
 /// Restoration works by pausing turns, overwriting existing state, allowing
 /// components to reestablish relationships, and then resuming turns.  See `Historical`.
-final public class Historian: LogMessageEmitter {
+final public class Historian: Logger {
     /// Logger
     public var logMessageHandler: LogMessage.Handler
-    public let logMessagePrefix = "Historian"
+    public let logPrefix = "Historian"
 
     /// The current world history.  See `Services.setNewHistory(...)`.
     public var historyAccess: HistoryAccess? {

@@ -17,7 +17,7 @@ extension Turn {
     static var INITIAL_TURN: Turn { return 0 }
 }
 
-public final class TurnSource: LogMessageEmitter {
+public final class TurnSource: Logger {
     /// Queue that everything runs on
     private var queue: DispatchQueue
 
@@ -26,7 +26,7 @@ public final class TurnSource: LogMessageEmitter {
 
     /// Logger
     public var logMessageHandler: LogMessage.Handler
-    public let logMessagePrefix = "TurnSource"
+    public let logPrefix = "TurnSource"
 
     /// Clients registered for new turns
     public typealias Client = (Turn, TurnSource) -> Void
@@ -148,7 +148,7 @@ public final class TurnSource: LogMessageEmitter {
         self.logMessageHandler = logMessageHandler
         self.clients = []
         self.state = State(thisTurn: .INITIAL_TURN, progress: .manual)
-        historian.register(client: self, withId: logMessagePrefix)
+        historian.register(client: self, withId: logPrefix)
     }
 }
 
@@ -181,7 +181,7 @@ extension TurnSource: Historical {
 
 extension TurnSource: CustomStringConvertible {
     public var description: String {
-        return "\(logMessagePrefix) thisTurn=\(thisTurn) progress=\(progress)"
+        return "\(logPrefix) thisTurn=\(thisTurn) progress=\(progress)"
     }
 }
 
