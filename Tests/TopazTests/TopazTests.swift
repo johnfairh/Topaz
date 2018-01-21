@@ -18,7 +18,7 @@ class TopazTests: XCTestCase {
         }
 
         ts.register { turn, _ in
-            if turn == 10 {
+            if turn == 4 {
                 DispatchQueue.main.async {
                     self.stopRunning = true
                 }
@@ -36,6 +36,8 @@ class TopazTests: XCTestCase {
         while !stopRunning {
             RunLoop.main.run(mode: .defaultRunLoopMode, before: Date.distantFuture)
         }
+
+        services.printDebugString()
     }
 
 

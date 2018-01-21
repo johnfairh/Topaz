@@ -23,17 +23,28 @@ public struct Services {
 
     /// Create a new set of Topaz services
     public init(logMessageHandler: @escaping LogMessage.Handler) {
-        debugDumper = DebugDumper()
+        debugDumper = DebugDumper(logMessageHandler: logMessageHandler)
         turnQueue = DispatchQueue(label: DispatchQueue.TOPAZ_LABEL)
-        historian = Historian(logMessageHandler: logMessageHandler)
-        turnSource = TurnSource(queue: turnQueue, historian: historian, logMessageHandler: logMessageHandler)
+        historian = Historian(debugDumper: debugDumper)
+        turnSource = TurnSource(queue: turnQueue, historian: historian, debugDumper: debugDumper)
     }
+}
 
+// MARK: - DebugDumper helpers
+
+extension Services {
     /// Collect a debug dump of the system
     public var debugString: String {
         return debugDumper.description
     }
+
+    /// Print a debug dump of the system
+    public func printDebugString() {
+        print(debugString)
+    }
 }
+
+// MARK: - History restore helpers
 
 extension Services {
     /// Coordinate between services to set up the world in a new state.

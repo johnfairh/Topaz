@@ -8,24 +8,16 @@
 import Foundation
 import Dispatch
 
-/// Convenience alias for the ID of a turn - treat it as a numeric.  The first turn of
-/// the world is 1, each turn increments, the value does not wrap.
-public typealias Turn = UInt64
-
-extension Turn {
-    /// Value of `TurnSource.thisTurn` during world initialization, before the first turn
-    static var INITIAL_TURN: Turn { return 0 }
-}
-
+/// Fundamental source of time events, generates turn notifications.
 public final class TurnSource: DebugDumpable, Logger {
     /// Queue that everything runs on
-    private var queue: DispatchQueue
+    private let queue: DispatchQueue
 
-    /// Need `Historian` to checkpoint turns
-    private var historian: Historian
+    /// Historian assigned to checkpoint world state over turns
+    private let historian: Historian
 
     /// Logger
-    public var logMessageHandler: LogMessage.Handler
+    public let logMessageHandler: LogMessage.Handler
 
     /// DebugDumper
     public let debugName = "TurnSource"
@@ -150,13 +142,14 @@ public final class TurnSource: DebugDumpable, Logger {
     }
 
     /// Create a new `TurnSource` in `Progress.manual` mode
-    public init(queue: DispatchQueue, historian: Historian, logMessageHandler: @escaping LogMessage.Handler) {
+    public init(queue: DispatchQueue, historian: Historian, debugDumper: DebugDumper) {
         self.queue = queue
         self.historian = historian
-        self.logMessageHandler = logMessageHandler
+        self.logMessageHandler = debugDumper.logMessageHandler
         self.clients = []
         self.state = State(thisTurn: .INITIAL_TURN, progress: .manual)
         historian.register(client: self, withId: debugName)
+        debugDumper.register(debugDumpable: self)
     }
 }
 

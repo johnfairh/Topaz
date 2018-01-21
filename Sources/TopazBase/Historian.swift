@@ -96,10 +96,15 @@ public protocol HistoryAccess: CustomStringConvertible {
 ///
 /// Restoration works by pausing turns, overwriting existing state, allowing
 /// components to reestablish relationships, and then resuming turns.  See `Historical`.
-final public class Historian: Logger {
+final public class Historian: DebugDumpable, Logger {
     /// Logger
-    public var logMessageHandler: LogMessage.Handler
-    public let logPrefix = "Historian"
+    public let logMessageHandler: LogMessage.Handler
+
+    /// DebugDumpable
+    public let debugName = "Historian"
+    public var description: String {
+        return "\(clients.count) clients, history is \(historyAccess?.description ?? "(nil)")"
+    }
 
     /// The current world history.  See `Services.setNewHistory(...)`.
     public var historyAccess: HistoryAccess? {
@@ -130,12 +135,13 @@ final public class Historian: Logger {
     private let jsonDecoder: JSONDecoder
 
     /// Create a new Historian
-    public init(logMessageHandler: @escaping LogMessage.Handler) {
-        self.logMessageHandler = logMessageHandler
+    public init(debugDumper: DebugDumper) {
+        self.logMessageHandler = debugDumper.logMessageHandler
         self.historyAccess = nil
         self.clients = [:]
         self.jsonEncoder = JSONEncoder()
         self.jsonDecoder = JSONDecoder()
+        debugDumper.register(debugDumpable: self)
     }
 
     /// Save history.  Usually called by `TurnSource` after each turn completes with the ID of the
