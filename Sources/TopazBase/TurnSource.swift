@@ -17,7 +17,7 @@ extension Turn {
     static var INITIAL_TURN: Turn { return 0 }
 }
 
-public final class TurnSource: Logger {
+public final class TurnSource: DebugDumpable, Logger {
     /// Queue that everything runs on
     private var queue: DispatchQueue
 
@@ -26,7 +26,9 @@ public final class TurnSource: Logger {
 
     /// Logger
     public var logMessageHandler: LogMessage.Handler
-    public let logPrefix = "TurnSource"
+
+    /// DebugDumper
+    public let debugName = "TurnSource"
 
     /// Clients registered for new turns
     public typealias Client = (Turn, TurnSource) -> Void
@@ -154,7 +156,7 @@ public final class TurnSource: Logger {
         self.logMessageHandler = logMessageHandler
         self.clients = []
         self.state = State(thisTurn: .INITIAL_TURN, progress: .manual)
-        historian.register(client: self, withId: logPrefix)
+        historian.register(client: self, withId: debugName)
     }
 }
 
@@ -186,14 +188,15 @@ extension TurnSource: Historical {
 // MARK: - CustomStringConvertible
 
 extension TurnSource: CustomStringConvertible {
+    /// Describe the component
     public var description: String {
-        return "\(logPrefix) thisTurn=\(thisTurn) progress=\(progress)"
+        return "thisTurn=\(thisTurn) progress=\(progress)"
     }
 }
 
 // MARK: - History
 
-/// Bit of a mess to serialize this thing because of the associated-type enum
+/// Bit of a mess to serialize this thing because of the associated-type enum...
 extension TurnSource.State {
     enum CodingKeys: CodingKey {
         case thisTurn

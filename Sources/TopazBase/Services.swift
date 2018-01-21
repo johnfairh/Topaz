@@ -9,6 +9,9 @@ import Dispatch
 
 /// Bundle of a complete set of Topaz services
 public struct Services {
+    /// Central store of debug state reporting
+    public let debugDumper: DebugDumper
+
     /// The queue on which turns execute.  Must use this queue to talk to `TurnSource` for example.
     public let turnQueue: DispatchQueue
 
@@ -20,13 +23,21 @@ public struct Services {
 
     /// Create a new set of Topaz services
     public init(logMessageHandler: @escaping LogMessage.Handler) {
+        debugDumper = DebugDumper()
         turnQueue = DispatchQueue(label: DispatchQueue.TOPAZ_LABEL)
         historian = Historian(logMessageHandler: logMessageHandler)
         turnSource = TurnSource(queue: turnQueue, historian: historian, logMessageHandler: logMessageHandler)
     }
+
+    /// Collect a debug dump of the system
+    public var debugString: String {
+        return debugDumper.description
+    }
 }
 
 extension Services {
+    /// Coordinate between services to set up the world in a new state.
+    /// Must be called on the turn queue.
     public func setNewHistory(_ historyAccess: HistoryAccess) throws {
         DispatchQueue.checkTurnQueue()
         historian.historyAccess = historyAccess
@@ -43,6 +54,8 @@ extension Services {
         turnSource.restartAfterRestore()
     }
 
+    /// Coordinate between services to move the world to a different turn in
+    /// the current history.  Must be called on the turn queue.
     public func setCurrentHistoryTurn(_ turn: Turn) throws {
         DispatchQueue.checkTurnQueue()
         try historian.restoreAtTurn(turn)

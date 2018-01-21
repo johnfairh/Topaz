@@ -28,6 +28,7 @@
 		02039FEC200B66770043E564 /* Historian.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02039FEB200B66770043E564 /* Historian.swift */; };
 		02039FEE200CAEEE0043E564 /* HistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02039FED200CAEEE0043E564 /* HistoryStore.swift */; };
 		02039FF0200CBBD90043E564 /* ErrorHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02039FEF200CBBD90043E564 /* ErrorHandling.swift */; };
+		025A3F262014D0E100B8C2B0 /* DebugDumper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025A3F252014D0E100B8C2B0 /* DebugDumper.swift */; };
 		OBJ_24 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_6 /* Package.swift */; };
 		OBJ_30 /* TopazTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_14 /* TopazTests.swift */; };
 		OBJ_32 /* TopazBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "Topaz::TopazBase::Product" /* TopazBase.framework */; };
@@ -67,6 +68,7 @@
 		02039FEB200B66770043E564 /* Historian.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Historian.swift; sourceTree = "<group>"; };
 		02039FED200CAEEE0043E564 /* HistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryStore.swift; sourceTree = "<group>"; };
 		02039FEF200CBBD90043E564 /* ErrorHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandling.swift; sourceTree = "<group>"; };
+		025A3F252014D0E100B8C2B0 /* DebugDumper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugDumper.swift; sourceTree = "<group>"; };
 		OBJ_11 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		OBJ_14 /* TopazTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopazTests.swift; sourceTree = "<group>"; };
 		OBJ_6 /* Package.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 				02039FE6200921DE0043E564 /* TurnSource.swift */,
 				02039FE22008C9D60043E564 /* TurnScheduler.swift */,
 				02039FEB200B66770043E564 /* Historian.swift */,
+				025A3F252014D0E100B8C2B0 /* DebugDumper.swift */,
 				02039FED200CAEEE0043E564 /* HistoryStore.swift */,
 				02039FE02008C6320043E564 /* LogMessage.swift */,
 				02039FEF200CBBD90043E564 /* ErrorHandling.swift */,
@@ -297,6 +300,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
+				025A3F262014D0E100B8C2B0 /* DebugDumper.swift in Sources */,
 				02039FEA200A289C0043E564 /* Services.swift in Sources */,
 				02039FE52008C9DA0043E564 /* LogMessage.swift in Sources */,
 				02039FF0200CBBD90043E564 /* ErrorHandling.swift in Sources */,

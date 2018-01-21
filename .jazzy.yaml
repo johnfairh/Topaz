@@ -1,0 +1,7 @@
+theme: fullwidth
+min_acl: private
+module: TopazBase
+author: John Fairhurst
+xcodebuild_arguments:
+   - "-target"
+   - "TopazBase"

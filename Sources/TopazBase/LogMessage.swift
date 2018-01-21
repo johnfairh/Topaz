@@ -84,3 +84,8 @@ public extension Logger {
     /// By default there is no prefix
     var logPrefix: String { return "" }
 }
+
+public extension Logger where Self: DebugDumpable {
+    /// Use `DebugDumpable.debugName` for the prefix where possible
+    var logPrefix: String { return debugName }
+}
