@@ -13,22 +13,21 @@ public final class FatalError {
     internal static weak var debugDumper: DebugDumper?
 
     /// Set a function to be called on fatal error after the dump has been collected.
-    /// If nil then `Swift.fatalError(...)` is called and the process exits.
-    public static var continuation: (( () -> String, StaticString, UInt ) -> Never)?
+    /// Ideally chain on to the existing value.
+    public static var continuation: (String, StaticString, UInt) -> Never = { msg, file, line in
+        Swift.fatalError(msg, file: file, line: line)
+    }
 }
 
 /// Override `Swift.fatalError` to get debug data before exitting.
 func fatalError(_ message: @autoclosure () -> String = "", file: StaticString = #file, line: UInt = #line) -> Never {
+    let messageText = message()
 
     // Push a debug dump to the logger.  All kinds of things could go wrong but ignore that for now.
-    FatalError.debugDumper.map { $0.dumpForFatal(message: "fatalError \(message()) file: \(file) line: \(line)") }
+    FatalError.debugDumper.map { $0.dumpForFatal(message: "fatalError \(messageText) file: \(file) line: \(line)") }
 
-    // Proceed towards
-    if let continuation = FatalError.continuation {
-        continuation(message, file, line)
-    } else {
-        Swift.fatalError(message, file: file, line: line)
-    }
+    // Proceed towards death
+    FatalError.continuation(messageText, file, line)
 }
 
 // MARK: - Exceptions

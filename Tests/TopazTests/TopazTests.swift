@@ -36,13 +36,21 @@ class TopazTests: XCTestCase {
             ts.progress = .automatic(milliseconds: 500)
         }
 
-        while !stopRunning {
-            RunLoop.main.run(mode: .defaultRunLoopMode, before: Date.distantFuture)
+        let fatalErrorExpectation = expectation(description: "Trying to crash")
+
+        FatalError.continuation = { msg, file, line -> Never in
+            fatalErrorExpectation.fulfill()
+            while true {}
         }
 
-        services.printDebugString()
-    }
+//        waitForExpectations(timeout: 200)
 
+//        while !stopRunning {
+//            RunLoop.main.run(mode: .defaultRunLoopMode, before: Date.distantFuture)
+//        }
+
+        //services.printDebugString()
+    }
 
     static var allTests = [
         ("testExample", testExample),
