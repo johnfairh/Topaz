@@ -30,6 +30,7 @@
 		02039FF0200CBBD90043E564 /* ErrorHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02039FEF200CBBD90043E564 /* ErrorHandling.swift */; };
 		025A3F262014D0E100B8C2B0 /* DebugDumper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025A3F252014D0E100B8C2B0 /* DebugDumper.swift */; };
 		025A3F282015035B00B8C2B0 /* Turn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025A3F272015035B00B8C2B0 /* Turn.swift */; };
+		025A3F2A20164E1900B8C2B0 /* DispatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025A3F2920164E1900B8C2B0 /* DispatchQueue.swift */; };
 		OBJ_24 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_6 /* Package.swift */; };
 		OBJ_30 /* TopazTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_14 /* TopazTests.swift */; };
 		OBJ_32 /* TopazBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "Topaz::TopazBase::Product" /* TopazBase.framework */; };
@@ -71,6 +72,7 @@
 		02039FEF200CBBD90043E564 /* ErrorHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandling.swift; sourceTree = "<group>"; };
 		025A3F252014D0E100B8C2B0 /* DebugDumper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugDumper.swift; sourceTree = "<group>"; };
 		025A3F272015035B00B8C2B0 /* Turn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Turn.swift; sourceTree = "<group>"; };
+		025A3F2920164E1900B8C2B0 /* DispatchQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchQueue.swift; sourceTree = "<group>"; };
 		OBJ_11 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		OBJ_14 /* TopazTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopazTests.swift; sourceTree = "<group>"; };
 		OBJ_6 /* Package.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 				02039FED200CAEEE0043E564 /* HistoryStore.swift */,
 				02039FE02008C6320043E564 /* LogMessage.swift */,
 				02039FEF200CBBD90043E564 /* ErrorHandling.swift */,
+				025A3F2920164E1900B8C2B0 /* DispatchQueue.swift */,
 				02039FE9200A289C0043E564 /* Services.swift */,
 			);
 			name = TopazBase;
@@ -306,6 +309,7 @@
 				025A3F262014D0E100B8C2B0 /* DebugDumper.swift in Sources */,
 				02039FEA200A289C0043E564 /* Services.swift in Sources */,
 				02039FE52008C9DA0043E564 /* LogMessage.swift in Sources */,
+				025A3F2A20164E1900B8C2B0 /* DispatchQueue.swift in Sources */,
 				02039FF0200CBBD90043E564 /* ErrorHandling.swift in Sources */,
 				025A3F282015035B00B8C2B0 /* Turn.swift in Sources */,
 				02039FE8200921DE0043E564 /* TurnSource.swift in Sources */,
