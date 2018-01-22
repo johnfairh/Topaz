@@ -11,7 +11,7 @@ class TopazTests: XCTestCase {
         let q = services.turnQueue
         let ts = services.turnSource
 
-        let historyStore = InMemoryHistoryStore()
+        let historyStore = InMemoryHistoryStore(debugDumper: services.debugDumper)
         let history = try! historyStore.createEmpty(name: "TopazTests")
         q.sync {
             try! services.setNewHistory(history)

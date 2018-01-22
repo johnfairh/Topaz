@@ -10,7 +10,7 @@ import Foundation
 /// A world history along with associated metadata.
 public protocol History: HistoryAccess {
     /// User-friendly name associated with the `History`
-    var name: String { get }
+    var historyName: String { get }
 
     /// Time that the `History` was last updated
     var accessTime: Date { get }
@@ -49,10 +49,10 @@ public extension HistoryStore {
 // MARK: InMemoryHistoreStore
 
 /// A sample history store for testing and debugging that keeps everything live in-memory.
-public final class InMemoryHistoryStore: HistoryStore {
+public final class InMemoryHistoryStore: HistoryStore, DebugDumpable {
     /// In-memory history, stores all turns forever
     final class InMemoryHistory: History {
-        let name: String
+        let historyName: String
         var accessTime: Date
         var turnStore: [Turn : [String : HistoricalTurnData]]
         var highestTurn: Turn = .INITIAL_TURN
@@ -63,7 +63,7 @@ public final class InMemoryHistoryStore: HistoryStore {
         var clientData: Data?
 
         init(name: String) {
-            self.name = name
+            self.historyName = name
             self.accessTime = Date()
             self.turnStore = [:]
             self.active = false
@@ -88,7 +88,7 @@ public final class InMemoryHistoryStore: HistoryStore {
         }
 
         var description: String {
-            return "InMemoryHistory \(name) turns \(turns) last accessed \(accessTime)"
+            return "\(historyName) turns \(turns) last accessed \(accessTime)"
         }
     }
 
@@ -99,13 +99,13 @@ public final class InMemoryHistoryStore: HistoryStore {
     }
 
     public func delete(history: History) throws {
-        guard let _ = historyStore[history.name] else {
-            throw RestoreError(details: "Don't have history called \(history.name)")
+        guard let _ = historyStore[history.historyName] else {
+            throw RestoreError(details: "Don't have history called \(history.historyName)")
         }
         guard !history.active else {
-            throw RestoreError(details: "Can't delete active history \(history.name)")
+            throw RestoreError(details: "Can't delete active history \(history.historyName)")
         }
-        historyStore[history.name] = nil
+        historyStore[history.historyName] = nil
     }
 
     public func createEmpty(name: String) throws -> History {
@@ -117,5 +117,27 @@ public final class InMemoryHistoryStore: HistoryStore {
         return history
     }
 
-    public init() {}
+    /// Create a fresh, empty, in-memory store
+    public init(debugDumper: DebugDumper) {
+        debugDumper.register(debugDumpable: self)
+    }
+
+    // MARK: - Debug
+
+    /// Debug key
+    public var debugName = "InMemoryHistoryStore"
+
+    /// Describe everything
+    public var description: String {
+        let sb = StringBuilder()
+        sb.line("\(historyStore.count) histories")
+        sb.in()
+        historyStore.forEach { key, history in
+            sb.line("History \(key)")
+            sb.in()
+              .line(history.description)
+              .out()
+        }
+        return sb.string
+    }
 }
