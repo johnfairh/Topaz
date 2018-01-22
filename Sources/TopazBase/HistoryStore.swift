@@ -78,7 +78,7 @@ public final class InMemoryHistoryStore: HistoryStore, DebugDumpable {
 
         func loadDataForTurn(_ turn: Turn) throws -> [String : HistoricalTurnData] {
             guard let turnData = turnStore[turn] else {
-                throw RestoreError(details: "History does not have turn \(turn), contents approx \(turns)")
+                throw RestoreError("History does not have turn \(turn), contents approx \(turns)")
             }
             return turnData
         }
@@ -100,17 +100,17 @@ public final class InMemoryHistoryStore: HistoryStore, DebugDumpable {
 
     public func delete(history: History) throws {
         guard let _ = historyStore[history.historyName] else {
-            throw RestoreError(details: "Don't have history called \(history.historyName)")
+            throw RestoreError("Don't have history called \(history.historyName)")
         }
         guard !history.active else {
-            throw RestoreError(details: "Can't delete active history \(history.historyName)")
+            throw RestoreError("Can't delete active history \(history.historyName)")
         }
         historyStore[history.historyName] = nil
     }
 
     public func createEmpty(name: String) throws -> History {
         guard historyStore[name] == nil else {
-            throw RestoreError(details: "Already have history called \(name), can't create a new one")
+            throw RestoreError("Already have history called \(name), can't create a new one")
         }
         let history = InMemoryHistory(name: name)
         historyStore[name] = history

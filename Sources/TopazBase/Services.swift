@@ -27,6 +27,7 @@ public struct Services {
         turnQueue = DispatchQueue.createTurnQueue()
         historian = Historian(debugDumper: debugDumper)
         turnSource = TurnSource(queue: turnQueue, historian: historian, debugDumper: debugDumper)
+        FatalError.debugDumper = debugDumper
     }
 }
 

@@ -68,7 +68,7 @@ public final class TurnSource: DebugDumpable, Logger {
 
     /// The next turn
     public var nextTurn: Turn {
-        guard thisTurn < Turn.max else {
+        guard thisTurn < .max else {
             log(.error, "Turn limit reached, the end.")
             fatalError()
         }

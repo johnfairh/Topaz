@@ -57,6 +57,11 @@ public struct LogMessage: CustomStringConvertible {
         self.body  = body
     }
 
+    public init(_ level: LogLevel, _ message: String) {
+        self.level = level
+        self.body = { message }
+    }
+
     /// A string combining `level` and `body`.
     public var description: String {
         return "\(level.rawValue): \(body())"

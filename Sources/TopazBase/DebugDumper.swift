@@ -72,7 +72,7 @@ public final class DebugDumper: CustomStringConvertible {
 
     static private let dashes = String(repeating: "-", count: 100)
 
-    /// Stringify everything
+    /// Stringify everything.  Blithely ignoring concurrency risks.
     public var description: String {
         let builder = StringBuilder()
         let timestamp = Date().description
@@ -92,6 +92,14 @@ public final class DebugDumper: CustomStringConvertible {
 
     /// Send the debug dump as a log message
     public func log(_ level: LogLevel = .debug) {
-        logMessageHandler(LogMessage(level) { self.description })
+        logMessageHandler(LogMessage(level, "\n\(self.description)"))
+    }
+
+    /// Called during exception generation or `fatalError()` processing to capture state
+    /// at the death.  Various concurrency and reentrancy horrors lurk but ignoring that
+    /// until have a clearer picture of the threading above + below TopazBase.
+    public func dumpForFatal(message: String) {
+        logMessageHandler(LogMessage(.error, "[DebugDumper] Generating debug dump for \(message)"))
+        log(.error)
     }
 }

@@ -63,7 +63,7 @@ extension Historical {
     /// By default fail if asked to convert versions - data must be corrupt/from the future.
     public func convert(from: Data, atVersion: HistoryVersion,
                         usingDecoder decoder: JSONDecoder, usingEncoder encoder: JSONEncoder) throws -> Data {
-        throw RestoreError(details: "HistoryStorable.convert unimplemented, can't convert from \(atVersion) to \(historyVersion)")
+        throw RestoreError("HistoryStorable.convert unimplemented, can't convert from \(atVersion) to \(historyVersion)")
     }
 }
 
@@ -203,7 +203,7 @@ final public class Historian: DebugDumpable, Logger {
             guard var historicalTurnData = turnData[historyName] else {
                 let missingMsg = "Historical \(historyName), nothing found in turn data - cancel restore"
                 log(.warning, missingMsg)
-                throw RestoreError(details: missingMsg)
+                throw RestoreError(missingMsg)
             }
 
             let dataVersion = historicalTurnData.version
@@ -213,7 +213,7 @@ final public class Historian: DebugDumpable, Logger {
                 let versionMsg = "Historical \(historyName), turn data version \(dataVersion) incompatible with " +
                                  "declared version \(liveVersion) - cancel restore"
                 log(.warning, versionMsg)
-                throw RestoreError(details: versionMsg)
+                throw RestoreError(versionMsg)
             }
 
             if dataVersion < liveVersion {

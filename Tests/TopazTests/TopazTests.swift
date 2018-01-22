@@ -1,5 +1,5 @@
 import XCTest
-import Dispatch
+import Foundation
 import TopazBase
 
 class TopazTests: XCTestCase {
@@ -7,7 +7,10 @@ class TopazTests: XCTestCase {
     var stopRunning = false
 
     func testExample() {
-        let services = Services { lm in print(lm) }
+        let services = Services { lm in
+            let timestamp = Date().description
+            print("\(timestamp) \(lm.body())")
+        }
         let q = services.turnQueue
         let ts = services.turnSource
 
