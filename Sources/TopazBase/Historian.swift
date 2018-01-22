@@ -29,6 +29,9 @@ extension HistoryVersion {
 /// own thing against their own datastore. The `Historical.historyVersion` and
 /// `Historical.convert(...)` fields have safe default implementations.
 public protocol Historical {
+    /// Key to save this client's history under
+    var historyName: String { get }
+
     /// Save the client's state using the given `JSONEncoder`
     func saveHistory(using encoder: JSONEncoder) -> Data
 
@@ -62,6 +65,11 @@ extension Historical {
                         usingDecoder decoder: JSONDecoder, usingEncoder encoder: JSONEncoder) throws -> Data {
         throw RestoreError(details: "HistoryStorable.convert unimplemented, can't convert from \(atVersion) to \(historyVersion)")
     }
+}
+
+extension Historical where Self: DebugDumpable {
+    /// Use the debugName for the historyName when possible
+    public var historyName: String { return debugName }
 }
 
 /// The data stored by `Historian` per client per turn
@@ -122,12 +130,13 @@ final public class Historian: DebugDumpable, Logger {
     private var clients: [String : Historical]
 
     /// Subscribe to be part of history saving + restoration
-    public func register(client: Historical, withId id: String) {
-        guard clients[id] == nil else {
-            log(.error, "Multiple clients registering with id \(id)")
+    public func register(historical client: Historical) {
+        let name = client.historyName
+        guard clients[name] == nil else {
+            log(.error, "Multiple clients registering with history name \(name)")
             fatalError()
         }
-        clients[id] = client
+        clients[name] = client
     }
 
     /// Customized json encode/decode
@@ -157,11 +166,11 @@ final public class Historian: DebugDumpable, Logger {
 
         var data: [String : HistoricalTurnData] = [:]
 
-        clients.forEach { name, historical in
-            log(.debugHistory, "Collecting data for client \(name)")
+        clients.values.forEach { historical in
+            log(.debugHistory, "Collecting data for client \(historical.historyName)")
             let turnData = historical.saveHistory(using: jsonEncoder)
             let version  = historical.historyVersion
-            data[name] = HistoricalTurnData(turnData: turnData, version: version)
+            data[historical.historyName] = HistoricalTurnData(turnData: turnData, version: version)
             log(.debugHistory, "Collected data at version \(version)")
         }
 
@@ -189,9 +198,10 @@ final public class Historian: DebugDumpable, Logger {
         var turnDataChanged = false
 
         // 2 - fan restored data out to clients
-        try clients.forEach { name, historical in
-            guard var historicalTurnData = turnData[name] else {
-                let missingMsg = "Historical \(name), nothing found in turn data - cancel restore"
+        try clients.values.forEach { historical in
+            let historyName = historical.historyName
+            guard var historicalTurnData = turnData[historyName] else {
+                let missingMsg = "Historical \(historyName), nothing found in turn data - cancel restore"
                 log(.warning, missingMsg)
                 throw RestoreError(details: missingMsg)
             }
@@ -200,28 +210,28 @@ final public class Historian: DebugDumpable, Logger {
             let liveVersion = historical.historyVersion
 
             guard dataVersion <= liveVersion else {
-                let versionMsg = "Historical \(name), turn data version \(dataVersion) incompatible with " +
+                let versionMsg = "Historical \(historyName), turn data version \(dataVersion) incompatible with " +
                                  "declared version \(liveVersion) - cancel restore"
                 log(.warning, versionMsg)
                 throw RestoreError(details: versionMsg)
             }
 
             if dataVersion < liveVersion {
-                log(.info, "Historical \(name), turn data version \(dataVersion) needs converting to " +
+                log(.info, "Historical \(historyName), turn data version \(dataVersion) needs converting to " +
                            "declared version \(liveVersion)")
                 let newVersionData = try historical.convert(from: historicalTurnData.turnData,
                                                             atVersion: historicalTurnData.version,
                                                             usingDecoder: jsonDecoder,
                                                             usingEncoder: jsonEncoder)
-                log(.info, "Historical \(name) turn data version conversion done")
+                log(.info, "Historical \(historyName) turn data version conversion done")
                 historicalTurnData = HistoricalTurnData(turnData: newVersionData, version: historical.historyVersion)
-                turnData[name] = historicalTurnData
+                turnData[historyName] = historicalTurnData
                 turnDataChanged = true
             }
 
-            log(.info, "Historical \(name) restore")
+            log(.info, "Historical \(historyName) restore")
             try historical.restoreHistory(from: historicalTurnData.turnData, using: jsonDecoder)
-            log(.debug, "Historical \(name) restore done")
+            log(.debug, "Historical \(historyName) restore done")
         }
 
         // 3 - if any clients did an upgrade, re-save the data
@@ -234,10 +244,10 @@ final public class Historian: DebugDumpable, Logger {
         log(.info, "Component data restore done, sending restore-complete")
 
         // 4 - fan restore-complete out to clients
-        clients.forEach { name, historical in
-            log(.debug, "Historical \(name) sending restore-complete")
+        clients.values.forEach { historical in
+            log(.debug, "Historical \(historical.historyName) sending restore-complete")
             historical.restoreComplete()
-            log(.debug, "Historical \(name) restore-complete done")
+            log(.debug, "Historical \(historical.historyName) restore-complete done")
         }
 
         log(.info, "End restoring data for turn \(turn)")

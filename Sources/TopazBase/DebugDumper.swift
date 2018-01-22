@@ -19,7 +19,7 @@ public final class StringBuilder {
 
     /// Get a multi-line string for the added lines
     public var string: String {
-        return lines.joined(separator: "\n") + "\n"
+        return lines.joined(separator: "\n")
     }
 
     /// Create a new instance

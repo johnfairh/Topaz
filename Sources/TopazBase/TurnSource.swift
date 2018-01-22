@@ -148,7 +148,7 @@ public final class TurnSource: DebugDumpable, Logger {
         self.logMessageHandler = debugDumper.logMessageHandler
         self.clients = []
         self.state = State(thisTurn: .INITIAL_TURN, progress: .manual)
-        historian.register(client: self, withId: debugName)
+        historian.register(historical: self)
         debugDumper.register(debugDumpable: self)
     }
 }
