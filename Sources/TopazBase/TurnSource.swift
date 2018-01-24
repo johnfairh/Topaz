@@ -207,17 +207,13 @@ extension TurnSource.State {
     }
 
     public init(from decoder: Decoder) throws {
-        do {
-            let values = try decoder.container(keyedBy: CodingKeys.self)
-            thisTurn = try values.decode(UInt64.self, forKey: .thisTurn)
-            if values.contains(.progressIsManual) {
-                progress = .manual
-            } else {
-                let period = try values.decode(UInt32.self, forKey: .progressAutoMilliseconds)
-                progress = .automatic(milliseconds: period)
-            }
-        } catch {
-            throw RestoreError(underlyingError: error)
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        thisTurn = try values.decode(UInt64.self, forKey: .thisTurn)
+        if values.contains(.progressIsManual) {
+            progress = .manual
+        } else {
+            let period = try values.decode(UInt32.self, forKey: .progressAutoMilliseconds)
+            progress = .automatic(milliseconds: period)
         }
     }
 }

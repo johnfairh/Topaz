@@ -23,7 +23,7 @@ class TopazTests: XCTestCase {
         ts.register { turn, _ in
             if turn == 4 {
                 do {
-                    throw RestoreError("Test")
+                    throw TopazError("Test")
                 } catch {
 
                 }

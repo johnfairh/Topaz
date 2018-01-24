@@ -7,7 +7,9 @@
 
 // MARK: - Fatal error hooks
 
-/// Namespace for configuring fatal error behaviour
+/// Namespace for configuring fatal error behaviour.
+/// This drops the multi-instance illusion to avoid passing around
+/// generally useless context.
 public final class FatalError {
     /// Stash a reference to a debug dumper to get a dump as part of fatal.
     internal static weak var debugDumper: DebugDumper?
@@ -42,7 +44,7 @@ public class TopazError: Error, CustomStringConvertible {
         self.details = details
 
         // Push a debug dump to the logger.  All kinds of things could go wrong but ignore that for now.
-        FatalError.debugDumper.map { $0.dumpForFatal(message: "exception \(self)") }
+        FatalError.debugDumper?.dumpForFatal(message: "exception \(self)")
     }
 
     public convenience init(underlyingError: Error) {
@@ -58,5 +60,17 @@ public class TopazError: Error, CustomStringConvertible {
     }
 }
 
-/// temp compat patch
-public typealias RestoreError = TopazError
+extension Logger {
+    public func throwError(_ error: TopazError) throws -> Never {
+        log(.warning, error.description)
+        throw error
+    }
+
+    public func throwError(_ details: String) throws -> Never {
+        try throwError(TopazError(details))
+    }
+
+    public func throwError(underlyingError: Error, details: String = "") throws -> Never {
+        try throwError(TopazError(underlyingError: underlyingError, details: details))
+    }
+}
