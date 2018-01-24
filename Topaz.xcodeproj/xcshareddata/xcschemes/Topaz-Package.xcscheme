@@ -53,6 +53,11 @@
                BlueprintName = "TopazTests"
                ReferencedContainer = "container:Topaz.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "TopazTests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
       <AdditionalOptions>

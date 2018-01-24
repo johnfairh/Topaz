@@ -56,7 +56,7 @@ public class TopazError: Error, CustomStringConvertible {
     }
 
     public var description: String {
-        return "Exception details:\(details) \(underlyingError as? String ?? "(no underlying error)")"
+        return "Exception details:\(details) \(underlyingError as? String ?? "")"
     }
 }
 

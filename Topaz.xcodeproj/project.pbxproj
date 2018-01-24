@@ -31,6 +31,9 @@
 		025A3F262014D0E100B8C2B0 /* DebugDumper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025A3F252014D0E100B8C2B0 /* DebugDumper.swift */; };
 		025A3F282015035B00B8C2B0 /* Turn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025A3F272015035B00B8C2B0 /* Turn.swift */; };
 		025A3F2A20164E1900B8C2B0 /* DispatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025A3F2920164E1900B8C2B0 /* DispatchQueue.swift */; };
+		025A3F2C2018C00600B8C2B0 /* TestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025A3F2B2018C00600B8C2B0 /* TestCase.swift */; };
+		025A3F2E2018C05800B8C2B0 /* TestHistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025A3F2D2018C05800B8C2B0 /* TestHistoryStore.swift */; };
+		025A3F302018C34300B8C2B0 /* TestInMemoryHistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025A3F2F2018C34300B8C2B0 /* TestInMemoryHistoryStore.swift */; };
 		OBJ_24 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_6 /* Package.swift */; };
 		OBJ_30 /* TopazTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_14 /* TopazTests.swift */; };
 		OBJ_32 /* TopazBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "Topaz::TopazBase::Product" /* TopazBase.framework */; };
@@ -73,6 +76,9 @@
 		025A3F252014D0E100B8C2B0 /* DebugDumper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugDumper.swift; sourceTree = "<group>"; };
 		025A3F272015035B00B8C2B0 /* Turn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Turn.swift; sourceTree = "<group>"; };
 		025A3F2920164E1900B8C2B0 /* DispatchQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchQueue.swift; sourceTree = "<group>"; };
+		025A3F2B2018C00600B8C2B0 /* TestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestCase.swift; sourceTree = "<group>"; };
+		025A3F2D2018C05800B8C2B0 /* TestHistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHistoryStore.swift; sourceTree = "<group>"; };
+		025A3F2F2018C34300B8C2B0 /* TestInMemoryHistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestInMemoryHistoryStore.swift; sourceTree = "<group>"; };
 		OBJ_11 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		OBJ_14 /* TopazTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopazTests.swift; sourceTree = "<group>"; };
 		OBJ_6 /* Package.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
@@ -129,6 +135,9 @@
 			isa = PBXGroup;
 			children = (
 				OBJ_14 /* TopazTests.swift */,
+				025A3F2B2018C00600B8C2B0 /* TestCase.swift */,
+				025A3F2D2018C05800B8C2B0 /* TestHistoryStore.swift */,
+				025A3F2F2018C34300B8C2B0 /* TestInMemoryHistoryStore.swift */,
 			);
 			name = TopazTests;
 			path = Tests/TopazTests;
@@ -290,7 +299,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
+				025A3F302018C34300B8C2B0 /* TestInMemoryHistoryStore.swift in Sources */,
 				OBJ_30 /* TopazTests.swift in Sources */,
+				025A3F2C2018C00600B8C2B0 /* TestCase.swift in Sources */,
+				025A3F2E2018C05800B8C2B0 /* TestHistoryStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
