@@ -133,8 +133,7 @@ final public class Historian: DebugDumpable, Logger {
     public func register(historical client: Historical) {
         let name = client.historyName
         guard clients[name] == nil else {
-            log(.error, "Multiple clients registering with history name \(name)")
-            fatalError()
+            fatal("Multiple clients registering with history name \(name)")
         }
         clients[name] = client
     }
@@ -158,8 +157,7 @@ final public class Historian: DebugDumpable, Logger {
     public func save(turn: Turn) {
         DispatchQueue.checkTurnQueue(self)
         guard let historyAccess = historyAccess else {
-            log(.error, "Call to save history but history access not configured")
-            fatalError()
+            fatal("Call to save history but history access not configured")
         }
 
         log(.debugHistory, "Start saving data for turn \(turn)")
@@ -187,8 +185,8 @@ final public class Historian: DebugDumpable, Logger {
     public func restoreAtTurn(_ turn: Turn) throws {
         DispatchQueue.checkTurnQueue(self)
         guard let historyAccess = historyAccess else {
-            log(.error, "Call to restore history but history access not configured")
-            fatalError()
+            // Such a tragic situation may as well crash
+            fatal("Call to restore history but history access not configured")
         }
 
         log(.info, "Start restoring data for turn \(turn)")

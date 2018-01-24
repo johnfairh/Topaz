@@ -86,6 +86,12 @@ public extension Logger {
         logMessageHandler(LogMessage(level, { "[\(self.logPrefix)] \(body())" }))
     }
 
+    /// Fatal-error wrapper
+    func fatal(_ message: String, file: StaticString = #file, line: UInt = #line) -> Never {
+        log(.error, "\(file):\(line) \(message)")
+        fatalError(message, file: file, line: line)
+    }
+
     /// By default there is no prefix
     var logPrefix: String { return "" }
 }

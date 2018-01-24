@@ -2,7 +2,7 @@
 //  DispatchQueue.swift
 //  TopazBase
 //
-//  Created by John Fairhurst on 22/01/2018.
+//  Distributed under the MIT license, see LICENSE.
 //
 
 import Dispatch

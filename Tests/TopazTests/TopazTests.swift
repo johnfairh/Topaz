@@ -22,6 +22,11 @@ class TopazTests: XCTestCase {
 
         ts.register { turn, _ in
             if turn == 4 {
+                do {
+                    throw RestoreError("Test")
+                } catch {
+
+                }
                 DispatchQueue.main.async {
                     self.stopRunning = true
                 }
@@ -36,20 +41,9 @@ class TopazTests: XCTestCase {
             ts.progress = .automatic(milliseconds: 500)
         }
 
-        let fatalErrorExpectation = expectation(description: "Trying to crash")
-
-        FatalError.continuation = { msg, file, line -> Never in
-            fatalErrorExpectation.fulfill()
-            while true {}
+        while !stopRunning {
+            RunLoop.main.run(mode: .defaultRunLoopMode, before: Date.distantFuture)
         }
-
-//        waitForExpectations(timeout: 200)
-
-//        while !stopRunning {
-//            RunLoop.main.run(mode: .defaultRunLoopMode, before: Date.distantFuture)
-//        }
-
-        //services.printDebugString()
     }
 
     static var allTests = [

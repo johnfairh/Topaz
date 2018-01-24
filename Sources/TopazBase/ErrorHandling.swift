@@ -24,7 +24,7 @@ func fatalError(_ message: @autoclosure () -> String = "", file: StaticString = 
     let messageText = message()
 
     // Push a debug dump to the logger.  All kinds of things could go wrong but ignore that for now.
-    FatalError.debugDumper.map { $0.dumpForFatal(message: "fatalError \(messageText) file: \(file) line: \(line)") }
+    FatalError.debugDumper?.dumpForFatal(message: "FatalError \(file):\(line) \(messageText)")
 
     // Proceed towards death
     FatalError.continuation(messageText, file, line)
@@ -59,4 +59,4 @@ public class TopazError: Error, CustomStringConvertible {
 }
 
 /// temp compat patch
-typealias RestoreError = TopazError
+public typealias RestoreError = TopazError

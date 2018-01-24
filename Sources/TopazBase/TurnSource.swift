@@ -69,8 +69,7 @@ public final class TurnSource: DebugDumpable, Logger {
     /// The next turn
     public var nextTurn: Turn {
         guard thisTurn < .max else {
-            log(.error, "Turn limit reached, the end.")
-            fatalError()
+            fatal("Turn limit reached, the end.")
         }
         return thisTurn + 1
     }
@@ -78,8 +77,7 @@ public final class TurnSource: DebugDumpable, Logger {
     /// Execute the next turn
     private func newTurn() {
         guard nextTurn != .INITIAL_TURN else {
-            log(.error, "Confused about turn ordering, current turn is \(self.thisTurn)")
-            fatalError()
+            fatal("Confused about turn ordering, current turn is \(self.thisTurn)")
         }
         thisTurn = nextTurn
         log(.info, "Starting turn \(self.thisTurn)")
@@ -106,8 +104,8 @@ public final class TurnSource: DebugDumpable, Logger {
 
     private func tickTimer() {
         guard case let .automatic(milliseconds) = progress else {
-            log(.warning, "Timer ticked but progress set to manual")
-            fatalError() // For now
+            // UI coding error - crash
+            fatal("Timer ticked but progress set to manual")
         }
         newTurn()
         startTimer(milliseconds)
@@ -135,8 +133,8 @@ public final class TurnSource: DebugDumpable, Logger {
     public func turn() {
         DispatchQueue.checkTurnQueue(self)
         guard case .manual = progress else {
-            log(.warning, "Manual turn requested but progress is \(self.progress)")
-            fatalError() // For now
+            // Coding error - crash
+            fatal("Manual turn requested but progress is \(self.progress)")
         }
         newTurn()
     }
