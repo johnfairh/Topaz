@@ -78,6 +78,11 @@ public struct HistoricalTurnData: Codable {
     public let turnData: Data
     /// `HistoryVersion` of `turnData`
     public let version: HistoryVersion
+
+    public init(turnData: Data, version: HistoryVersion) {
+        self.turnData = turnData
+        self.version = version
+    }
 }
 
 /// Persistence services for `Historian`.  Typically produced by a `HistoryStore` on which

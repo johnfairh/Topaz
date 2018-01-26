@@ -38,11 +38,10 @@ public extension HistoryStore {
     /// Return a sensible `History` from the store: either the most recently accessed or
     /// a fresh one if the store is empty.
     public func getLatestHistory(newlyNamed: String) throws -> History {
-        if let mostRecentHistory = (histories.sorted { h1, h2 in h1.accessTime < h2.accessTime }).first {
+        if let mostRecentHistory = (histories.sorted { h1, h2 in h1.accessTime > h2.accessTime }).first {
             return mostRecentHistory
-        } else {
-            return try createEmpty(name: newlyNamed)
         }
+        return try createEmpty(name: newlyNamed)
     }
 }
 
@@ -56,8 +55,11 @@ public final class InMemoryHistoryStore: HistoryStore, DebugDumpable {
         var accessTime: Date
         var turnStore: [Turn : [String : HistoricalTurnData]]
         var highestTurn: Turn = .INITIAL_TURN
+        var empty: Bool {
+            return highestTurn == .INITIAL_TURN
+        }
         var turns: Range<Turn> {
-            return .INITIAL_TURN..<highestTurn
+            return empty ? .INITIAL_TURN ..< .INITIAL_TURN : .INITIAL_TURN+1..<highestTurn+1
         }
         var active: Bool
         var clientData: Data?
@@ -84,7 +86,7 @@ public final class InMemoryHistoryStore: HistoryStore, DebugDumpable {
         }
 
         var mostRecentTurn: Turn? {
-            return highestTurn == .INITIAL_TURN ? nil : highestTurn
+            return empty ? nil : highestTurn
         }
 
         var description: String {

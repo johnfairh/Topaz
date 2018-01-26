@@ -22,4 +22,7 @@ class TestInMemoryHistoryStore: TestCase, TestHistoryStoreProtocol {
 
     func testEmptyStore() { tstEmptyStore() }
     func testCreateDelete() { tstCreateDelete() }
+    func testDeleteActive() { tstDeleteActive() }
+    func testLatestHistory() { tstLatestHistory() }
+    func testSaveLoadTurnData() { tstSaveLoadTurnData() }
 }
