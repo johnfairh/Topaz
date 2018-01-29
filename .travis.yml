@@ -3,4 +3,4 @@ osx_image: xcode9
 script:
     - xcodebuild build test -sdk macosx -project Topaz.xcodeproj -scheme Topaz-Package CODE_SIGNING_REQUIRED=NO -enableCodeCoverage YES VALID_ARCHS=x86_64
 after_success:
-    - bash <(curl -s https://codecov.io/bash) -X gcov -X coveragepy
+    - bash <(curl -s https://codecov.io/bash) -J 'TopazBase' -X gcov -X coveragepy
