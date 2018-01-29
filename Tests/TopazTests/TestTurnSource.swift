@@ -11,17 +11,10 @@ import TopazBase
 /// Test turn source (and by side-effect, lower-level Services setup)
 class TestTurnSource: TestCase {
 
-    func createDefaultWorld() -> TestWorld{
-        let world = TestWorld()
-        doNoThrow {
-            try world.setDefaultHistory()
-        }
-        return world
-    }
-
     /// Sanity check everything comes up
     func testWorldSetup() {
-        let _ = createDefaultWorld()
+        let world = createDefaultWorld()
+        world.services.printDebugString()
     }
 
     /// Test manual turn progression
@@ -36,9 +29,7 @@ class TestTurnSource: TestCase {
             turnReceived = true
         }
 
-        world.services.turnQueue.sync {
-            world.services.turnSource.turn()
-        }
+        world.turn(1)
 
         XCTAssertTrue(turnReceived)
     }

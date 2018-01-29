@@ -65,4 +65,13 @@ class TestCase: XCTestCase {
         }
         return isSubset
     }
+
+    /// Create a default empty world
+    func createDefaultWorld() -> TestWorld{
+        let world = TestWorld()
+        doNoThrow {
+            try world.setDefaultHistory()
+        }
+        return world
+    }
 }

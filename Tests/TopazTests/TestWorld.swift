@@ -5,6 +5,7 @@
 //  Distributed under the MIT license, see LICENSE.
 //
 
+import XCTest
 import Foundation
 import TopazBase
 
@@ -29,6 +30,25 @@ class TestWorld {
         let history = try historyStore.getLatestHistory(newlyNamed: "TstHistory")
         try services.turnQueue.sync {
             try services.setNewHistory(history)
+        }
+    }
+
+    /// Helper to run a single turn - require the turn number to help docs in client
+    func turn(_ turn: Turn) {
+        services.turnQueue.sync {
+            XCTAssertEqual(turn, services.turnSource.nextTurn)
+            services.turnSource.turn()
+        }
+    }
+
+    /// Helper to change the current turn
+    func setCurrentTurn(_ turn: Turn) {
+        do {
+            try services.turnQueue.sync {
+                try services.setCurrentHistoryTurn(turn)
+            }
+        } catch {
+            XCTFail("Unexpected error \(error)")
         }
     }
 

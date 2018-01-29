@@ -2,7 +2,7 @@
 //  Turn.swift
 //  TopazBase
 //
-//  Created by John Fairhurst on 21/01/2018.
+//  Distributed under the MIT license, see LICENSE.
 //
 
 import Foundation

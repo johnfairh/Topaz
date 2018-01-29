@@ -204,6 +204,7 @@ final public class Historian: DebugDumpable, Logger {
         try clients.values.forEach { historical in
             let historyName = historical.historyName
             guard var historicalTurnData = turnData[historyName] else {
+                // TODO: Is this really right?  Consider releasing new software with new Historical component?
                 try throwError("Historical \(historyName), nothing found in turn data - cancel restore")
             }
 
