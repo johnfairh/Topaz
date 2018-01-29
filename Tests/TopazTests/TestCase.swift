@@ -9,7 +9,6 @@ import XCTest
 import TopazBase
 
 /// Common superclass for testcase classes.
-/// Placeholder right now.
 class TestCase: XCTestCase {
 
     /// Sleep the current thread
@@ -35,13 +34,15 @@ class TestCase: XCTestCase {
         }
     }
 
-    func turnDataSame(a: [String:HistoricalTurnData], b: [String:HistoricalTurnData]) -> Bool {
+    /// Are two TurnData dictionaries identical?
+    func areTurnDataSame(a: [String:HistoricalTurnData], b: [String:HistoricalTurnData]) -> Bool {
         return turnDataSubset(superset: a, supname: "a", subset: b, subname: "b") &&
                turnDataSubset(superset: b, supname: "b", subset: a, subname: "a")
     }
 
-    func turnDataSubset(superset: [String:HistoricalTurnData], supname: String,
-                        subset: [String:HistoricalTurnData], subname: String) -> Bool {
+    /// One direction of the 'identical' check
+    private func turnDataSubset(superset: [String:HistoricalTurnData], supname: String,
+                                subset: [String:HistoricalTurnData], subname: String) -> Bool {
         var isSubset = true
         for key in subset.keys {
             let subTurnData = subset[key]!

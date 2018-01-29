@@ -113,14 +113,14 @@ extension TestHistoryStoreProtocol where Self: TestCase {
             let turn1AllData = [clientName : turn1VersionedData]
             let turn2AllData = [clientName : turn2VersionedData]
 
-            XCTAssertFalse(turnDataSame(a: turn1AllData, b: turn2AllData))
+            XCTAssertFalse(areTurnDataSame(a: turn1AllData, b: turn2AllData))
 
             try history.setDataForTurn(1, data: turn1AllData)
             let turn1Time = history.accessTime
 
             do {
                 let testData = try history.loadDataForTurn(1)
-                XCTAssertTrue(turnDataSame(a: testData, b: turn1AllData))
+                XCTAssertTrue(areTurnDataSame(a: testData, b: turn1AllData))
             }
             sleep(seconds: 1)
             try history.setDataForTurn(2, data: [clientName : turn2VersionedData])
@@ -129,9 +129,9 @@ extension TestHistoryStoreProtocol where Self: TestCase {
 
             do {
                 let testData1 = try history.loadDataForTurn(1)
-                XCTAssertTrue(turnDataSame(a: testData1, b: turn1AllData))
+                XCTAssertTrue(areTurnDataSame(a: testData1, b: turn1AllData))
                 let testData2 = try history.loadDataForTurn(2)
-                XCTAssertTrue(turnDataSame(a: testData2, b: turn2AllData))
+                XCTAssertTrue(areTurnDataSame(a: testData2, b: turn2AllData))
             }
 
             XCTAssertEqual(2, history.mostRecentTurn!)

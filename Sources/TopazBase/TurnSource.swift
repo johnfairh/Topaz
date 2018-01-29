@@ -8,13 +8,18 @@
 import Foundation
 import Dispatch
 
+/// Protocol to receive turn events
+public protocol TurnSourceClient {
+    func turnStart(turn: Turn)
+}
+
 /// Fundamental source of time events, generates turn notifications.
 public final class TurnSource: DebugDumpable, Logger {
     /// Queue that everything runs on
     private let queue: DispatchQueue
 
     /// Historian assigned to checkpoint world state over turns
-    private let historian: Historian
+    private weak var historian: Historian?
 
     /// Logger
     public let logMessageHandler: LogMessage.Handler
@@ -23,16 +28,26 @@ public final class TurnSource: DebugDumpable, Logger {
     public let debugName = "TurnSource"
 
     /// Clients registered for new turns
-    public typealias Client = (Turn, TurnSource) -> Void
+    private var clients: Array<TurnSourceClient>
 
-    private var clients: Array<Client>
-
-    /// Add a client.  No way to remove clients, expected to be static linkage.
-    public func register(client: @escaping Client) {
+    /// Add a client.  No way to remove clients, expected to be static linkage -- transient/dynamic
+    /// needs should be met using `TurnScheduler`.
+    public func register(client: TurnSourceClient) {
         if thisTurn > Turn.INITIAL_TURN {
             DispatchQueue.checkTurnQueue(self)
         }
         clients.append(client)
+    }
+
+    /// Add a client as a closure for convenience
+    public func register(callback: @escaping (Turn) -> Void) {
+        struct Helper: TurnSourceClient {
+            var callback: (Turn) -> Void
+            func turnStart(turn: Turn) {
+                callback(turn)
+            }
+        }
+        register(client: Helper(callback: callback))
     }
 
     /// Rules for turn progression
@@ -81,9 +96,9 @@ public final class TurnSource: DebugDumpable, Logger {
         }
         thisTurn = nextTurn
         log(.info, "Starting turn \(self.thisTurn)")
-        clients.forEach { $0(thisTurn, self) }
+        clients.forEach { $0.turnStart(turn: thisTurn) }
         log(.info, "Adding turn \(self.thisTurn) to history")
-        historian.save(turn: thisTurn)
+        historian?.save(turn: thisTurn)
         log(.debug, "Turn \(self.thisTurn) added to history")
     }
 
