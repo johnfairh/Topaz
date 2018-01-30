@@ -41,14 +41,19 @@ class TestWorld {
         }
     }
 
-    /// Helper to change the current turn
+    /// Helper to change the current turn - work or fail test
     func setCurrentTurn(_ turn: Turn) {
         do {
-            try services.turnQueue.sync {
-                try services.setCurrentHistoryTurn(turn)
-            }
+            try trySetCurrentTurn(turn)
         } catch {
             XCTFail("Unexpected error \(error)")
+        }
+    }
+
+    /// Helper to change the current turn - can throw
+    func trySetCurrentTurn(_ turn: Turn) throws {
+        try services.turnQueue.sync {
+            try services.setCurrentHistoryTurn(turn)
         }
     }
 

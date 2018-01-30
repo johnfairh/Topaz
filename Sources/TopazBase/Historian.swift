@@ -39,8 +39,12 @@ public protocol Historical {
     /// `data` is guaranteed to be at version `historyVersion`.
     func restoreHistory(from data: Data, using decoder: JSONDecoder) throws
 
+    /// Indicate a restore is in progress but no data found for this client.
+    /// Client should throw if this is never expected.
+    func restoreHistoryNoDataFound() throws
+
     /// Called when all clients have been decoded OK.  Use this to eg. reestablish
-    /// communicationswith other clients based on now-shared state.
+    /// communications with other clients based on now-shared state.
     func restoreComplete()
 
     /// What version of history does the client expect in `restore(...)`?
@@ -54,6 +58,11 @@ public protocol Historical {
 
 /// Default implementations for `Historical`
 extension Historical {
+    /// By default fail when no data found
+    public func restoreHistoryNoDataFound() throws {
+        throw TopazError("Historical.restoreHistoryNoDataFound unimplemented, can't handle missing data")
+    }
+
     /// By default do nothing when all clients have restored their state
     public func restoreComplete() {}
 
@@ -161,7 +170,7 @@ final public class Historian: DebugDumpable, Logger {
     /// `Turn` that has just completed.  This happens often so logging is filtered.
     public func save(turn: Turn) {
         DispatchQueue.checkTurnQueue(self)
-        guard let historyAccess = historyAccess else {
+        guard historyAccess != nil else {
             fatal("Call to save history but history access not configured")
         }
 
@@ -177,13 +186,18 @@ final public class Historian: DebugDumpable, Logger {
             log(.debugHistory, "Collected data at version \(version)")
         }
 
+        log(.debugHistory, "Writing turn data for turn \(turn)")
+        setDataForTurn(turn, data: data)
+        log(.debugHistory, "End saving data for turn \(turn)")
+    }
+
+    /// Helper to save turn data, suppressing propagation of any error
+    private func setDataForTurn(_ turn: Turn, data: [String : HistoricalTurnData]) {
         do {
-            log(.debugHistory, "Writing turn data for turn \(turn)")
-            try historyAccess.setDataForTurn(turn, data: data)
+            try historyAccess!.setDataForTurn(turn, data: data)
         } catch {
             log(.warning, "Failed to save turn data: \(error).  Pressing on.")
         }
-        log(.debugHistory, "End saving data for turn \(turn)")
     }
 
     /// Restore all clients' turn data.  This is a bit of a dance.  Happens rarely, log @info.
@@ -204,8 +218,10 @@ final public class Historian: DebugDumpable, Logger {
         try clients.values.forEach { historical in
             let historyName = historical.historyName
             guard var historicalTurnData = turnData[historyName] else {
-                // TODO: Is this really right?  Consider releasing new software with new Historical component?
-                try throwError("Historical \(historyName), nothing found in turn data - cancel restore")
+                log(.info, "Historical \(historyName) no data found")
+                try historical.restoreHistoryNoDataFound()
+                log(.debug, "Historical \(historyName) no data found done")
+                return // next client
             }
 
             let dataVersion = historicalTurnData.version
@@ -237,7 +253,7 @@ final public class Historian: DebugDumpable, Logger {
         // 3 - if any clients did an upgrade, re-save the data
         if turnDataChanged {
             log(.info, "Re-writing turn data for turn \(turn)")
-            try historyAccess.setDataForTurn(turn, data: turnData)
+            setDataForTurn(turn, data: turnData)
             log(.debug, "Re-write done")
         }
 
