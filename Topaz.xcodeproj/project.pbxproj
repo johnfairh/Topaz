@@ -37,6 +37,7 @@
 		025ADF83201F333000980817 /* TestWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025ADF82201F333000980817 /* TestWorld.swift */; };
 		025ADF85201F3D4200980817 /* TestTurnSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025ADF84201F3D4200980817 /* TestTurnSource.swift */; };
 		025ADF87201F441C00980817 /* TestHistorian.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025ADF86201F441C00980817 /* TestHistorian.swift */; };
+		025ADF8920208B5F00980817 /* TestErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025ADF8820208B5F00980817 /* TestErrors.swift */; };
 		OBJ_24 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_6 /* Package.swift */; };
 		OBJ_32 /* TopazBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "Topaz::TopazBase::Product" /* TopazBase.framework */; };
 		OBJ_40 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_11 /* main.swift */; };
@@ -84,6 +85,7 @@
 		025ADF82201F333000980817 /* TestWorld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestWorld.swift; sourceTree = "<group>"; };
 		025ADF84201F3D4200980817 /* TestTurnSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestTurnSource.swift; sourceTree = "<group>"; };
 		025ADF86201F441C00980817 /* TestHistorian.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHistorian.swift; sourceTree = "<group>"; };
+		025ADF8820208B5F00980817 /* TestErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestErrors.swift; sourceTree = "<group>"; };
 		OBJ_11 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		OBJ_6 /* Package.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		"Topaz::Topaz::Product" /* Topaz */ = {isa = PBXFileReference; lastKnownFileType = text; path = Topaz; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -144,6 +146,7 @@
 				025ADF82201F333000980817 /* TestWorld.swift */,
 				025ADF84201F3D4200980817 /* TestTurnSource.swift */,
 				025ADF86201F441C00980817 /* TestHistorian.swift */,
+				025ADF8820208B5F00980817 /* TestErrors.swift */,
 			);
 			name = TopazTests;
 			path = Tests/TopazTests;
@@ -307,6 +310,7 @@
 			files = (
 				025A3F302018C34300B8C2B0 /* TestInMemoryHistoryStore.swift in Sources */,
 				025ADF87201F441C00980817 /* TestHistorian.swift in Sources */,
+				025ADF8920208B5F00980817 /* TestErrors.swift in Sources */,
 				025ADF85201F3D4200980817 /* TestTurnSource.swift in Sources */,
 				025ADF83201F333000980817 /* TestWorld.swift in Sources */,
 				025A3F2C2018C00600B8C2B0 /* TestCase.swift in Sources */,

@@ -39,16 +39,12 @@ public class TopazError: Error, CustomStringConvertible {
     public let underlyingError: Error?
     public let details: String
 
-    public init(underlyingError: Error?, details: String) {
+    public init(underlyingError: Error?, details: String = "") {
         self.underlyingError = underlyingError
         self.details = details
 
         // Push a debug dump to the logger.  All kinds of things could go wrong but ignore that for now.
         FatalError.debugDumper?.dumpForFatal(message: "exception \(self)")
-    }
-
-    public convenience init(underlyingError: Error) {
-        self.init(underlyingError: underlyingError, details: "")
     }
 
     public convenience init(_ details: String) {

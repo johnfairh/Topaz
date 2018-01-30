@@ -31,8 +31,7 @@ extension DispatchQueue {
             return // all good!
         }
         if let logger = logger {
-            logger.log(.error, "Thread not on turn queue, found \(currentLabel ?? "(no label)")")
-            fatalError()
+            logger.fatal("Thread not on turn queue, found \(currentLabel ?? "(no label)")")
         }
     }
 }

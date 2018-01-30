@@ -2,7 +2,7 @@
 //  TestTurnSource.swift
 //  TopazTests
 //
-//  Created by John Fairhurst on 29/01/2018.
+//  Distributed under the MIT license, see LICENSE.
 //
 
 import XCTest
