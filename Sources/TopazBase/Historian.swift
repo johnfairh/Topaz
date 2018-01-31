@@ -69,7 +69,8 @@ extension Historical {
     /// By default return `HistoryVersion.FIRST_VERSION`
     public var historyVersion: HistoryVersion { return .FIRST_VERSION }
 
-    /// By default fail if asked to convert versions - data must be corrupt/from the future.
+    /// By default fail if asked to convert versions - means client has set historyVersion but not
+    /// implemented this method to deal with a conversion.
     public func convert(from: Data, atVersion: HistoryVersion,
                         usingDecoder decoder: JSONDecoder, usingEncoder encoder: JSONEncoder) throws -> Data {
         throw TopazError("Historical.convert unimplemented, can't convert from \(atVersion) to \(historyVersion)")
