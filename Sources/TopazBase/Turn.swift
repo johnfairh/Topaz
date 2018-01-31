@@ -12,6 +12,7 @@ import Foundation
 public typealias Turn = UInt64
 
 extension Turn {
-    /// Value of `TurnSource.thisTurn` during world initialization, before the first turn
+    /// Value of `TurnSource.thisTurn` during world initialization, before the first turn.
+    /// Again: a turn with this number is never executed.
     static var INITIAL_TURN: Turn { return 0 }
 }
