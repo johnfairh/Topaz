@@ -51,9 +51,12 @@ class TestErrors: TestCase {
 
         let fatalExpectation = expectation(description: "Fatal error happened")
 
+        let oldContinuation = FatalError.continuation
+
         FatalError.continuation = { msg, file, line in
             fatalExpectation.fulfill()
             print("TestCase FatalError handler, hanging thread")
+            FatalError.continuation = oldContinuation
             while true {
                 RunLoop.current.run() // hmm this isn't -> Never...
             }

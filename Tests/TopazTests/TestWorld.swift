@@ -57,6 +57,17 @@ class TestWorld {
         }
     }
 
+    /// Helper to replace the history
+    func setHistoryAccess(_ historyAccess: HistoryAccess) {
+        services.turnQueue.sync {
+            do {
+                try services.setNewHistory(historyAccess)
+            } catch {
+                XCTFail("Unexpected error \(error)")
+            }
+        }
+    }
+
     /// Apparatus to run main loop / asynchronously stop it
     private var stopRunningMainLoop: Bool
 

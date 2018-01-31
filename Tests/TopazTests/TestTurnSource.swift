@@ -15,8 +15,6 @@ class TestTurnSource: TestCase {
     func testWorldSetup() {
         let world = createDefaultWorld()
         world.services.printDebugString()
-        world.services.historian.historyAccess = nil
-        world.services.printDebugString()
     }
 
     /// Test manual turn progression

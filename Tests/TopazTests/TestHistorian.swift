@@ -10,6 +10,7 @@ import TopazBase
 
 /// Programmably badly-behaved history client.
 class TestHistorical: Historical {
+
     var historyName = "TestHistorical"
 
     var historyVersion = HistoryVersion(1)
@@ -18,7 +19,13 @@ class TestHistorical: Historical {
         var value: Int
     }
 
-    var state = State(value: 0)
+    var state = State(value: 999)
+
+    static let INITIAL_STATE_VALUE = 0
+
+    func restoreInitialHistory() {
+        state = State(value: TestHistorical.INITIAL_STATE_VALUE)
+    }
 
     func saveHistory(using encoder: JSONEncoder) -> Data {
         return try! encoder.encode(state)
@@ -124,20 +131,17 @@ class TestHistorian: TestCase {
 
     var historical: TestHistorical!
 
-    override func createDefaultWorld() -> TestWorld {
-        let world = super.createDefaultWorld()
-        historical = TestHistorical()
-        world.services.historian.register(historical: historical)
-        return world
-    }
-
     /// Helper to set up a world with history
     static let turn1Value = 55
     static let turn2Value = 1004
     static let turn3Value = 1230
 
     private func createTwoTurnWorld() -> TestWorld {
-        let world = createDefaultWorld()
+        historical = TestHistorical()
+        let world = createDefaultWorld(historicals: [historical])
+
+        // Check history has been reset
+        XCTAssertEqual(TestHistorical.INITIAL_STATE_VALUE, historical.state.value)
 
         historical.state.value = TestHistorian.turn1Value
         world.turn(1)
@@ -198,7 +202,7 @@ class TestHistorian: TestCase {
             return
         }
         let historyAccess = TestHistoryAccess(historyAccess: currentAccess)
-        world.services.historian.historyAccess = historyAccess
+        world.setHistoryAccess(historyAccess)
 
         historyAccess.failNextSave = true
         world.turn(3)
@@ -253,7 +257,7 @@ class TestHistorian: TestCase {
             return
         }
         let historyAccess = TestHistoryAccess(historyAccess: currentAccess)
-        world.services.historian.historyAccess = historyAccess
+        world.setHistoryAccess(historyAccess)
 
         // Acceptable no-data-found
         historyAccess.clientName = historical.historyName
@@ -282,5 +286,15 @@ class TestHistorian: TestCase {
             XCTFail("Unexpectedly restored data OK with wrong TurnSource version")
         }
         XCTAssertFalse(historyAccess.setClientDataVersionHighOnLoad)
+    }
+
+    /// Silly corner case
+    func testTurnRestoreBeforeHistory() {
+        let world = TestWorld()
+        world.services.turnQueue.sync {
+            doThrow {
+                try world.services.setCurrentHistoryTurn(22)
+            }
+        }
     }
 }

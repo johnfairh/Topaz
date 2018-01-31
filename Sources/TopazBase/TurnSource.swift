@@ -72,6 +72,11 @@ public final class TurnSource: DebugDumpable, Logger {
     fileprivate struct State: Codable {
         var thisTurn: Turn
         var progress: Progress
+
+        init() {
+            thisTurn = .INITIAL_TURN
+            progress = .manual
+        }
     }
     private var state: State
 
@@ -160,7 +165,7 @@ public final class TurnSource: DebugDumpable, Logger {
         self.historian = historian
         self.logMessageHandler = debugDumper.logMessageHandler
         self.clients = []
-        self.state = State(thisTurn: .INITIAL_TURN, progress: .manual)
+        self.state = State()
         historian.register(historical: self)
         debugDumper.register(debugDumpable: self)
     }
@@ -169,6 +174,11 @@ public final class TurnSource: DebugDumpable, Logger {
 // MARK: - Historical
 
 extension TurnSource: Historical {
+    /// Set up for a new world
+    public func restoreInitialHistory() {
+        self.state = State()
+    }
+
     /// Save internal `State` struct.
     public func saveHistory(using encoder: JSONEncoder) -> Data {
         return try! encoder.encode(state)

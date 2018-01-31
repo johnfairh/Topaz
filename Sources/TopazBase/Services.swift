@@ -52,17 +52,7 @@ extension Services {
     /// Must be called on the turn queue.
     public func setNewHistory(_ historyAccess: HistoryAccess) throws {
         DispatchQueue.checkTurnQueue()
-        historian.historyAccess = historyAccess
-
-        if let latestTurn = historyAccess.mostRecentTurn {
-            try historian.restoreAtTurn(latestTurn)
-        } else {
-            guard turnSource.thisTurn == .INITIAL_TURN else {
-                // TODO: do better?
-                fatalError("Attempting to set a new history that is empty, so cannot be restored from, " +
-                           "onto a world that is not at INITIAL_TURN.")
-            }
-        }
+        try historian.setNewHistory(historyAccess: historyAccess)
         turnSource.restartAfterRestore()
     }
 

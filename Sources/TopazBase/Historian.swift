@@ -32,6 +32,9 @@ public protocol Historical {
     /// Key to save this client's history under
     var historyName: String { get }
 
+    /// Change the client's state to be ready for the initial turn of a new world.
+    func restoreInitialHistory()
+
     /// Save the client's state using the given `JSONEncoder`
     func saveHistory(using encoder: JSONEncoder) -> Data
 
@@ -39,8 +42,9 @@ public protocol Historical {
     /// `data` is guaranteed to be at version `historyVersion`.
     func restoreHistory(from data: Data, using decoder: JSONDecoder) throws
 
-    /// Indicate a restore is in progress but no data found for this client.
-    /// Client should throw if this is never expected.
+    /// Set up the client's state when a restore happens but no history data
+    /// was present for the client.  Client should throw if this is not expected;
+    /// it happens when a new client is introduced to an existing world.
     func restoreHistoryNoDataFound() throws
 
     /// Called when all clients have been decoded OK.  Use this to eg. reestablish
@@ -126,26 +130,21 @@ final public class Historian: DebugDumpable, Logger {
     /// DebugDumpable
     public let debugName = "Historian"
     public var description: String {
-        return "\(clients.count) clients, history is \(historyAccess?.description ?? "(nil)")"
+        return "\(clients.count) clients, history is \(String(describing: historyAccess))"
     }
 
-    /// The current world history.  See `Services.setNewHistory(...)`.
-    public var historyAccess: HistoryAccess? {
-        willSet {
-            historyAccess?.active = false
-            historyAccess.map { self.log(.info, "Deactivating history \($0)") }
-        }
-        didSet {
-            historyAccess?.active = true
-            historyAccess.map { self.log(.info, "Activating history \($0)") }
-        }
-    }
+    /// The current world history, nil during startup
+    public private(set) var historyAccess: HistoryAccess?
 
     /// Clients registered for save/restore
     private var clients: [String : Historical]
 
     /// Subscribe to be part of history saving + restoration
     public func register(historical client: Historical) {
+        guard historyAccess == nil else {
+            // Coding error
+            fatal("Attempt to add history client after world has been restored")
+        }
         let name = client.historyName
         guard clients[name] == nil else {
             fatal("Multiple clients registering with history name \(name)")
@@ -188,12 +187,12 @@ final public class Historian: DebugDumpable, Logger {
         }
 
         log(.debugHistory, "Writing turn data for turn \(turn)")
-        setDataForTurn(turn, data: data)
+        saveDataForTurn(turn, data: data)
         log(.debugHistory, "End saving data for turn \(turn)")
     }
 
     /// Helper to save turn data, suppressing propagation of any error
-    private func setDataForTurn(_ turn: Turn, data: [String : HistoricalTurnData]) {
+    private func saveDataForTurn(_ turn: Turn, data: [String : HistoricalTurnData]) {
         do {
             try historyAccess!.setDataForTurn(turn, data: data)
         } catch {
@@ -201,12 +200,30 @@ final public class Historian: DebugDumpable, Logger {
         }
     }
 
+    /// Change (set) the history storage and sync the world to its contents
+    public func setNewHistory(historyAccess: HistoryAccess) throws {
+        if var oldAccess = self.historyAccess {
+            oldAccess.active = false
+            log(.info, "Deactivating history \(oldAccess)")
+        }
+        self.historyAccess = historyAccess
+        self.historyAccess?.active = true
+        log(.info, "Activating history \(historyAccess)")
+
+        if let latestTurn = historyAccess.mostRecentTurn {
+            log(.info, "New history not empty, restoring from it")
+            try restoreAtTurn(latestTurn)
+        } else {
+            log(.info, "New history is empty, resetting world")
+            restoreAtInitialTurn()
+        }
+    }
+
     /// Restore all clients' turn data.  This is a bit of a dance.  Happens rarely, log @info.
     public func restoreAtTurn(_ turn: Turn) throws {
         DispatchQueue.checkTurnQueue(self)
         guard let historyAccess = historyAccess else {
-            // Such a tragic situation may as well crash
-            fatal("Call to restore history but history access not configured")
+            try throwError("Historian.restoreAtTurn - historyaccess not configured")
         }
 
         log(.info, "Start restoring data for turn \(turn)")
@@ -216,8 +233,7 @@ final public class Historian: DebugDumpable, Logger {
         var turnDataChanged = false
 
         // 2 - fan restored data out to clients
-        try clients.values.forEach { historical in
-            let historyName = historical.historyName
+        try clients.forEach { historyName, historical in
             guard var historicalTurnData = turnData[historyName] else {
                 log(.info, "Historical \(historyName) no data found")
                 try historical.restoreHistoryNoDataFound()
@@ -254,19 +270,43 @@ final public class Historian: DebugDumpable, Logger {
         // 3 - if any clients did an upgrade, re-save the data
         if turnDataChanged {
             log(.info, "Re-writing turn data for turn \(turn)")
-            setDataForTurn(turn, data: turnData)
+            saveDataForTurn(turn, data: turnData)
             log(.debug, "Re-write done")
         }
 
-        log(.info, "Component data restore done, sending restore-complete")
+        log(.info, "Client data restore done, sending restore-complete")
 
         // 4 - fan restore-complete out to clients
-        clients.values.forEach { historical in
-            log(.debug, "Historical \(historical.historyName) sending restore-complete")
-            historical.restoreComplete()
-            log(.debug, "Historical \(historical.historyName) restore-complete done")
-        }
+        sendAllClientsRestoreComplete()
 
         log(.info, "End restoring data for turn \(turn)")
+    }
+
+    /// Helper, send the restore-complete to all clients
+    private func sendAllClientsRestoreComplete() {
+        clients.forEach { historyName, historical in
+            log(.debug, "Historical \(historyName) restore-complete")
+            historical.restoreComplete()
+            log(.debug, "Historical \(historyName) restore-complete done")
+        }
+    }
+
+    /// Coordinate all clients to reset to their initial state.
+    private func restoreAtInitialTurn() {
+        DispatchQueue.checkTurnQueue(self)
+
+        log(.info, "Start restoring data for initial turn")
+
+        clients.forEach { historyName, historical in
+            log(.info, "Historical \(historyName) initial restore")
+            historical.restoreInitialHistory()
+            log(.debug, "Historical \(historyName) initial restore done")
+        }
+
+        log(.info, "Client reset done, sending restore-complete")
+
+        sendAllClientsRestoreComplete()
+
+        log(.info, "End restoring data for initial turn")
     }
 }

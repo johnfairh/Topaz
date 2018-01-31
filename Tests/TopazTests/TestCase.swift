@@ -67,9 +67,12 @@ class TestCase: XCTestCase {
     }
 
     /// Create a default empty world
-    func createDefaultWorld() -> TestWorld{
+    func createDefaultWorld(historicals: [Historical] = []) -> TestWorld{
         let world = TestWorld()
         doNoThrow {
+            historicals.forEach { historical in
+                world.services.historian.register(historical: historical)
+            }
             try world.setDefaultHistory()
         }
         return world
