@@ -21,12 +21,16 @@ public struct Services {
     /// Generate turns
     public let turnSource: TurnSource
 
+    /// Schedule activity over turns
+    public let turnTimer: TurnTimer
+
     /// Create a new set of Topaz services
     public init(logMessageHandler: @escaping LogMessage.Handler) {
         debugDumper = DebugDumper(logMessageHandler: logMessageHandler)
         turnQueue = DispatchQueue.createTurnQueue()
         historian = Historian(debugDumper: debugDumper)
         turnSource = TurnSource(queue: turnQueue, historian: historian, debugDumper: debugDumper)
+        turnTimer = TurnTimer(turnSource: turnSource, debugDumper: debugDumper)
         FatalError.debugDumper = debugDumper
     }
 }

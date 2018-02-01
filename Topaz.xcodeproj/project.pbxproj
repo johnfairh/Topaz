@@ -21,7 +21,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		02039FE42008C9D60043E564 /* TurnScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02039FE22008C9D60043E564 /* TurnScheduler.swift */; };
+		02039FE42008C9D60043E564 /* TurnTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02039FE22008C9D60043E564 /* TurnTimer.swift */; };
 		02039FE52008C9DA0043E564 /* LogMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02039FE02008C6320043E564 /* LogMessage.swift */; };
 		02039FE8200921DE0043E564 /* TurnSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02039FE6200921DE0043E564 /* TurnSource.swift */; };
 		02039FEA200A289C0043E564 /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02039FE9200A289C0043E564 /* Services.swift */; };
@@ -70,7 +70,7 @@
 
 /* Begin PBXFileReference section */
 		02039FE02008C6320043E564 /* LogMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogMessage.swift; sourceTree = "<group>"; };
-		02039FE22008C9D60043E564 /* TurnScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnScheduler.swift; sourceTree = "<group>"; };
+		02039FE22008C9D60043E564 /* TurnTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnTimer.swift; sourceTree = "<group>"; };
 		02039FE6200921DE0043E564 /* TurnSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnSource.swift; sourceTree = "<group>"; };
 		02039FE9200A289C0043E564 /* Services.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services.swift; sourceTree = "<group>"; };
 		02039FEB200B66770043E564 /* Historian.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Historian.swift; sourceTree = "<group>"; };
@@ -187,7 +187,7 @@
 				025A3F272015035B00B8C2B0 /* Turn.swift */,
 				02039FEB200B66770043E564 /* Historian.swift */,
 				02039FE6200921DE0043E564 /* TurnSource.swift */,
-				02039FE22008C9D60043E564 /* TurnScheduler.swift */,
+				02039FE22008C9D60043E564 /* TurnTimer.swift */,
 				025A3F252014D0E100B8C2B0 /* DebugDumper.swift */,
 				02039FED200CAEEE0043E564 /* HistoryStore.swift */,
 				02039FE02008C6320043E564 /* LogMessage.swift */,
@@ -337,7 +337,7 @@
 				02039FF0200CBBD90043E564 /* ErrorHandling.swift in Sources */,
 				025A3F282015035B00B8C2B0 /* Turn.swift in Sources */,
 				02039FE8200921DE0043E564 /* TurnSource.swift in Sources */,
-				02039FE42008C9D60043E564 /* TurnScheduler.swift in Sources */,
+				02039FE42008C9D60043E564 /* TurnTimer.swift in Sources */,
 				02039FEE200CAEEE0043E564 /* HistoryStore.swift in Sources */,
 				02039FEC200B66770043E564 /* Historian.swift in Sources */,
 			);

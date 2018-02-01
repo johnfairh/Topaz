@@ -11,6 +11,9 @@ import Foundation
 /// the world is 1, each turn increments, the value does not wrap.
 public typealias Turn = UInt64
 
+/// Alias for a type to count Turns
+public typealias TurnCount = UInt64
+
 extension Turn {
     /// Value of `TurnSource.thisTurn` during world initialization, before the first turn.
     /// Again: a turn with this number is never executed.
