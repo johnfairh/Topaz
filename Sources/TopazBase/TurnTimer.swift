@@ -117,7 +117,7 @@ public final class TurnTimer : DebugDumpable, Logger, TurnSourceClient {
 
         /// Halt the timer.  Leave it on the queue for speed.
         func cancel() {
-            turnTimer?.log(.info, "Cancelling timer TokenId=\(self.tokenId)")
+            turnTimer?.log(.info, "Cancelling timer: \(self)")
             turnTimer = nil
         }
 
@@ -188,9 +188,9 @@ public final class TurnTimer : DebugDumpable, Logger, TurnSourceClient {
         // with relative=0.
 
         token.turnTimer = self
+        token.relativeDelay = after // assume the worst case + adjust as we go
 
-        // assume the worst case + adjust as we go
-        token.relativeDelay = after
+        log(.info, "Scheduling timer: \(token)")
 
         var inserted = false
 
@@ -237,6 +237,7 @@ public final class TurnTimer : DebugDumpable, Logger, TurnSourceClient {
 
             tokenQueue.removeFirst() // yuck data structure
             if !token.isCancelled {
+                log(.info, "Firing timer: \(token)")
                 token.tick()
                 if let repeatPeriod = token.repeatPeriod {
                     // schedule it again
