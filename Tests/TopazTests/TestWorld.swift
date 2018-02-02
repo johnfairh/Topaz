@@ -68,6 +68,20 @@ class TestWorld {
         }
     }
 
+    /// Helper to schedule timers
+    func scheduleTimer(after: TurnCount, callback: @escaping () -> Void) -> TurnTimerToken {
+        return services.turnQueue.sync {
+            services.turnTimer.schedule(after: after, callback: callback)
+        }
+    }
+
+    /// Helper to schedule repeating timer
+    func scheduleTimer(after: TurnCount, repeatingEvery: TurnCount, callback: @escaping () -> Void) -> TurnTimerToken {
+        return services.turnQueue.sync {
+            services.turnTimer.schedule(after: after, repeatingEvery: repeatingEvery, callback: callback)
+        }
+    }
+
     /// Apparatus to run main loop / asynchronously stop it
     private var stopRunningMainLoop: Bool
 

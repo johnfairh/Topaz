@@ -28,6 +28,7 @@
 		02039FEC200B66770043E564 /* Historian.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02039FEB200B66770043E564 /* Historian.swift */; };
 		02039FEE200CAEEE0043E564 /* HistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02039FED200CAEEE0043E564 /* HistoryStore.swift */; };
 		02039FF0200CBBD90043E564 /* ErrorHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02039FEF200CBBD90043E564 /* ErrorHandling.swift */; };
+		02243D372024683B00FEBF8A /* TestTurnTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02243D362024683B00FEBF8A /* TestTurnTimer.swift */; };
 		025A3F262014D0E100B8C2B0 /* DebugDumper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025A3F252014D0E100B8C2B0 /* DebugDumper.swift */; };
 		025A3F282015035B00B8C2B0 /* Turn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025A3F272015035B00B8C2B0 /* Turn.swift */; };
 		025A3F2A20164E1900B8C2B0 /* DispatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025A3F2920164E1900B8C2B0 /* DispatchQueue.swift */; };
@@ -76,6 +77,7 @@
 		02039FEB200B66770043E564 /* Historian.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Historian.swift; sourceTree = "<group>"; };
 		02039FED200CAEEE0043E564 /* HistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryStore.swift; sourceTree = "<group>"; };
 		02039FEF200CBBD90043E564 /* ErrorHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandling.swift; sourceTree = "<group>"; };
+		02243D362024683B00FEBF8A /* TestTurnTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestTurnTimer.swift; sourceTree = "<group>"; };
 		025A3F252014D0E100B8C2B0 /* DebugDumper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugDumper.swift; sourceTree = "<group>"; };
 		025A3F272015035B00B8C2B0 /* Turn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Turn.swift; sourceTree = "<group>"; };
 		025A3F2920164E1900B8C2B0 /* DispatchQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchQueue.swift; sourceTree = "<group>"; };
@@ -145,6 +147,7 @@
 				025A3F2F2018C34300B8C2B0 /* TestInMemoryHistoryStore.swift */,
 				025ADF82201F333000980817 /* TestWorld.swift */,
 				025ADF84201F3D4200980817 /* TestTurnSource.swift */,
+				02243D362024683B00FEBF8A /* TestTurnTimer.swift */,
 				025ADF86201F441C00980817 /* TestHistorian.swift */,
 				025ADF8820208B5F00980817 /* TestErrors.swift */,
 			);
@@ -308,6 +311,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
+				02243D372024683B00FEBF8A /* TestTurnTimer.swift in Sources */,
 				025A3F302018C34300B8C2B0 /* TestInMemoryHistoryStore.swift in Sources */,
 				025ADF87201F441C00980817 /* TestHistorian.swift in Sources */,
 				025ADF8920208B5F00980817 /* TestErrors.swift in Sources */,
