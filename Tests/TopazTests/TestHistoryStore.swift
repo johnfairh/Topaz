@@ -104,8 +104,8 @@ extension TestHistoryStoreProtocol where Self: TestCase {
             let history = try store.getLatestHistory(newlyNamed: "History")
             XCTAssertNil(history.mostRecentTurn)
 
-            let turn1Data = Data(bytes: [1,2,3,4])
-            let turn2Data = Data(bytes: [4,5,6,7])
+            let turn1Data = Data([1,2,3,4])
+            let turn2Data = Data([4,5,6,7])
             let version   = HistoryVersion(1)
             let turn1VersionedData = HistoricalTurnData(turnData: turn1Data, version: version)
             let turn2VersionedData = HistoricalTurnData(turnData: turn2Data, version: version)

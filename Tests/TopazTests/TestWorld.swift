@@ -88,7 +88,7 @@ class TestWorld {
     func runMainLoop() {
         stopRunningMainLoop = false
         while !stopRunningMainLoop {
-            RunLoop.main.run(mode: .defaultRunLoopMode, before: Date.distantFuture)
+            RunLoop.main.run(mode: .default, before: Date.distantFuture)
         }
     }
 

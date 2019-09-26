@@ -37,7 +37,7 @@ public protocol HistoryStore {
 public extension HistoryStore {
     /// Return a sensible `History` from the store: either the most recently accessed or
     /// a fresh one if the store is empty.
-    public func getLatestHistory(newlyNamed: String) throws -> History {
+    func getLatestHistory(newlyNamed: String) throws -> History {
         if let mostRecentHistory = (histories.sorted { h1, h2 in h1.accessTime > h2.accessTime }).first {
             return mostRecentHistory
         }
